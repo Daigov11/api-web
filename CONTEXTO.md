@@ -17,20 +17,20 @@ Fecha de este contexto: 2026-11-20.
 | Carpeta | Archivo | Ruta web | Página |
 |---|---|---|---|
 | inicio | index.html | `/` | Home |
-| resto | resto.html | `/resto` | Restaurantes |
-| fastfood | fastfood.html | `/fastfood` | Fast Food |
-| tiendas | tiendas.html | `/tiendas` | Tiendas |
-| hoteles | hoteles.html | `/hoteles` | Hoteles |
-| ferreterias | ferreterias.html | `/ferreterias` | Ferreterías |
-| minimarkets | minimarkets.html | `/minimarkets` | Minimarkets |
-| talleres | talleres.html | `/talleres` | Talleres |
-| asistencia | asistencia.html | `/asistencia` | Asistencia y Planillas |
-| cocheras | cocheras.html | `/cocheras` | Cocheras |
-| piscinas | piscinas.html | `/piscinas` | Piscinas |
-| canchas | canchas.html | `/canchas` | Canchas |
+| resto | resto.html | `/sistema-para-restaurantes` | Restaurantes |
+| fastfood | fastfood.html | `/fastfood` (provisional) | Fast Food |
+| tiendas | tiendas.html | `/sistema-gestion-y-facturacion-electronica-para-tienda-pymes` | Tiendas |
+| hoteles | hoteles.html | `/sistema-de-gestion-para-hoteles` | Hoteles |
+| ferreterias | ferreterias.html | `/sistema-gestion-y-facturacion-electronica-para-ferreterias` | Ferreterías |
+| minimarkets | minimarkets.html | `/sistema-de-gestion-y-facturacion-para-minimarket` | Minimarkets |
+| talleres | talleres.html | `/sistema-de-gestion-para-talleres-mecanicos` | Talleres |
+| asistencia | asistencia.html | `/asistencia` (provisional) | Asistencia y Planillas |
+| cocheras | cocheras.html | `/sistema-cocheras` | Cocheras |
+| piscinas | piscinas.html | `/piscinas` (provisional) | Piscinas |
+| canchas | canchas.html | `/sistema-canchas-deportivas` | Canchas |
 
 - `_generador/`: herramienta de desarrollo. **No es una página** y no se sube a la base de datos.
-- Las rutas web son provisionales y se pueden cambiar en `ROUTES` (`_generador/data.py`).
+- Las rutas web son las URLs reales de apiworking (ej. el original de Restaurantes es `/sistema-para-restaurantes`). Se definen en `ROUTES` (`_generador/data.py`). Fast Food, Asistencia y Piscinas aún no tienen ruta real.
 - La única referencia externa es Google Fonts (fuente Inter).
 - Cada página es responsive: un mismo archivo sirve para escritorio y para móvil.
 
@@ -81,7 +81,7 @@ La Home (`inicio/index.html`) contiene, en este orden:
 ## Pendientes
 
 - [ ] Definir cómo se manejarán las imágenes y reemplazar los marcadores `.ph`. Las mascotas son emojis provisionales.
-- [ ] Confirmar las URLs reales de cada página y actualizar `ROUTES`.
+- [ ] Definir la ruta real de Fast Food, Asistencia (¿`/ecosistema/apistaff`?) y Piscinas.
 - [ ] Revisar los textos que se redactaron porque el Figma no se pudo capturar completo:
   - el subtítulo del hero de Restaurantes;
   - algunas estaciones;

@@ -2,10 +2,18 @@
 # Contenido recolectado del prototipo Figma "WEB APIWORKING".
 
 ROUTES = {
-    "inicio": "/", "resto": "/resto", "fastfood": "/fastfood", "tiendas": "/tiendas",
-    "hoteles": "/hoteles", "ferreterias": "/ferreterias", "minimarkets": "/minimarkets",
-    "talleres": "/talleres", "asistencia": "/asistencia", "cocheras": "/cocheras",
-    "piscinas": "/piscinas", "canchas": "/canchas",
+    "inicio": "/",
+    "resto": "/sistema-para-restaurantes",
+    "fastfood": "/fastfood",  # PENDIENTE: no existe ruta real aún
+    "tiendas": "/sistema-gestion-y-facturacion-electronica-para-tienda-pymes",
+    "hoteles": "/sistema-de-gestion-para-hoteles",
+    "ferreterias": "/sistema-gestion-y-facturacion-electronica-para-ferreterias",
+    "minimarkets": "/sistema-de-gestion-y-facturacion-para-minimarket",
+    "talleres": "/sistema-de-gestion-para-talleres-mecanicos",
+    "asistencia": "/asistencia",  # PENDIENTE: ¿/ecosistema/apistaff?
+    "cocheras": "/sistema-cocheras",
+    "piscinas": "/piscinas",  # PENDIENTE: no existe ruta real aún
+    "canchas": "/sistema-canchas-deportivas",
 }
 
 GROUPS = [
