@@ -1,7 +1,7 @@
 # Web Apiworking — contexto del proyecto
 
 Versión en código del prototipo de Figma **"WEB APIWORKING"**: la Home y 11 páginas, una por rubro.
-Fecha de este contexto: 2026-11-20.
+Fecha de este contexto: 2026-11-21.
 
 ## Reglas del proyecto (obligatorias)
 
@@ -9,8 +9,37 @@ Fecha de este contexto: 2026-11-20.
    - **Motivo:** en Apiworking cada página se guarda en una base de datos como un bloque de código HTML. Un archivo equivale a una página completa.
 2. **Ningún archivo usa otros archivos de este proyecto.** No se permite `src`, `href` ni `@import` hacia `../resto/...`, `estilos.css`, `app.js` ni nada parecido.
    - Las referencias web externas sí están permitidas: CDN, Google Fonts, URLs públicas.
-   - La navegación entre páginas se hace con enlaces `<a href="/ruta">`.
-3. **Imágenes:** pendiente de definir. Por ahora son marcadores CSS (`<div class="ph" role="img">`, sin `src`) con una etiqueta que dice qué foto va en cada lugar.
+   - La navegación entre páginas se hace con enlaces absolutos `<a href="https://apiworking.com.pe/ruta/">`, igual que en `formulario.html`.
+3. **Seguir las técnicas de `formulario.html`** (la guía de cómo se arman las páginas para el CMS de Apiworking). Ver la sección siguiente.
+4. **Imágenes:** pendiente de definir. Por ahora son marcadores CSS (`<div class="ph" role="img">`, sin `src`) con una etiqueta que dice qué foto va en cada lugar.
+
+## Técnicas de la guía `formulario.html`
+
+`formulario.html` (en la raíz) es la referencia de cómo se armaban las páginas para que sus estilos se impongan sobre el contenedor HTML del CMS. No es un módulo. Todas las páginas aplican sus técnicas:
+
+1. **Capa propia:** todo el contenido va dentro de `<div class="awx-overlay awx-landing">`. Es una capa fija a pantalla completa (`position:fixed; inset:0; z-index:9999`) que tapa el contenedor del CMS y tiene su propio scroll.
+2. **CSS con prefijo:** cada regla empieza por `.awx-landing`, para ganarle a los estilos del CMS sin afectarlos. El generador añade el prefijo solo (`scope_css`); en `build.py` el CSS se escribe sin prefijo.
+   - `:root` y `body` pasan a `.awx-landing`; `html` pasa a `.awx-overlay`.
+3. **Sin clearfix del CMS:** se anulan los `::before`/`::after` que el CMS pone a contenedores como `.wrap`.
+4. **Sin choques con Bootstrap:** las clases `.modal` y `.lead` se renombran como `.awx-modal` y `.awx-lead`.
+5. **JS encapsulado y en ES5** (`var`, `function`): todo dentro de una función, sin variables globales en `window`, y las búsquedas limitadas a la capa `.awx-landing`. El `<script>` va dentro de la capa, al final.
+6. **Anclas por JS:** los enlaces `#seccion` se resuelven con `scrollIntoView` dentro de la capa, sin cambiar la URL del CMS.
+7. **Sin entidades HTML** (`&nbsp;`, `&amp;`…): se usan los caracteres directos.
+
+## Formulario de contacto (endpoint)
+
+Los formularios de consulta envían los datos al endpoint de Apiworking, igual que `formulario.html`.
+
+- **Endpoint:** `POST https://api-centralizador.apiworking.pe/api/Administrativo/sendFormContact` (JSON). Acepta CORS desde cualquier origen.
+- **Cuerpo:** `nombreCompleto`, `telefono` (solo dígitos, mínimo 7), `nombreNegocio`, `giroNegocio`, `ipCreacion` (obtenida de api.ipify.org) y `destinatarios`.
+- **`giroNegocio`:** el endpoint no tiene campos para plan, locales, especialidad ni necesidad. Por eso se envía el rubro en mayúsculas y, después, esos datos separados por `|`. Ejemplo: `RESTAURANTES | Locales: 1 local | Plan: STANDARD · S/ 949 al año`.
+- **Destinatarios:** son los mismos correos de `formulario.html` y se definen en `FORM_DEST` (`_generador/build.py`).
+- **Dónde está:** en cada página de rubro, en el modal "Agendar demo / Elegir plan" y en la sección "Prepara tu consulta". La Home no tiene formulario.
+- **Comportamiento:**
+  - valida los datos y muestra avisos si falta algo;
+  - mientras envía, el botón dice "Enviando..." y muestra un indicador de carga;
+  - si el envío funciona, limpia el formulario y abre la confirmación "Recibimos tu consulta.";
+  - si falla, muestra "Error al enviar. Intenta nuevamente.".
 
 ## Estructura
 
@@ -30,13 +59,13 @@ Fecha de este contexto: 2026-11-20.
 | canchas | canchas.html | `/sistema-canchas-deportivas` | Canchas |
 
 - `_generador/`: herramienta de desarrollo. **No es una página** y no se sube a la base de datos.
-- Las rutas web son las URLs reales de apiworking (ej. el original de Restaurantes es `/sistema-para-restaurantes`). Se definen en `ROUTES` (`_generador/data.py`). Fast Food, Asistencia y Piscinas aún no tienen ruta real.
-- La única referencia externa es Google Fonts (fuente Inter).
+- Las rutas son las URLs reales de apiworking; por ejemplo, la página original de Restaurantes es `/sistema-para-restaurantes`. Se definen en `ROUTES` y el dominio en `BASE_URL` (`_generador/data.py`). Los enlaces salen como `https://apiworking.com.pe/<ruta>/`. Fast Food, Asistencia y Piscinas aún no tienen ruta real.
+- Referencias externas: Google Fonts (Inter), el endpoint del formulario y api.ipify.org.
 - Cada página es responsive: un mismo archivo sirve para escritorio y para móvil.
 
 ## Contenido de cada página de rubro
 
-1. **Header:** el logo lleva a `/`. Tiene enlaces internos (`#como-funciona`, `#precios`, `#testimonios`) y el botón "Agendar demo", que abre un modal de consulta.
+1. **Header:** el logo lleva a la Home. Tiene enlaces internos (`#como-funciona`, `#precios`, `#testimonios`) y el botón "Agendar demo", que abre un modal de consulta.
 2. **Hero:** rueda con el botón "Ver giro" y una tarjeta de estado. Rappi y PedidosYa aparecen solo en resto y fastfood.
 3. **Franja de valor.**
 4. **Ecosistema:** 6 nodos y cada uno abre un panel con su propio texto. Incluye la planta "Ver crecer" y el botón "Sin movimiento".
@@ -55,7 +84,7 @@ Fecha de este contexto: 2026-11-20.
 11. **Testimonios:** por ahora es un marcador.
 12. **FAQ, formulario de consulta y footer.**
     - El FAQ tiene 5 preguntas.
-    - El formulario **no envía datos**: solo muestra un resumen, igual que el prototipo.
+    - El formulario envía los datos al endpoint de Apiworking (ver la sección del formulario).
 
 La Home (`inicio/index.html`) contiene, en este orden:
 - el hero con su collage y la tarjeta ApiLoyalty;
@@ -90,7 +119,8 @@ La Home (`inicio/index.html`) contiene, en este orden:
   - las recompensas de algunas tarjetas Wallet;
   - las viñetas de los planes Básico, Completo y Hoteles;
   - los textos de los nodos.
-- [ ] Conectar el formulario de consulta a un destino real.
+- [ ] Hacer un envío real de prueba desde el CMS. En local se probó con el endpoint simulado.
+- [ ] Decidir si se usa el logo real que aparece en `formulario.html`. Ahora el logo es texto.
 - [ ] Añadir los enlaces de los videos demostrativos y los testimonios reales.
 
 ## Cómo regenerar las páginas
@@ -108,6 +138,7 @@ python3 _generador/build.py .
 ## Verificación realizada
 
 - `node --check` pasa en el JS de las 12 páginas.
-- Una revisión con grep confirma que ningún archivo usa archivos locales del proyecto: los enlaces solo son `#`, `/ruta` o `https://`.
-- Se probaron automáticamente con Playwright los modales, el panel de planes, los nodos, el visor, las pestañas y el formulario en los 11 rubros. No hubo errores de JS.
-- En móvil (390 px) ninguna página se desborda a lo ancho.
+- Una revisión con grep confirma que ningún archivo usa archivos locales del proyecto: los enlaces solo son `#` o `https://`.
+- Se probaron automáticamente con Playwright los modales, el panel de planes, los nodos, el visor, las pestañas y las anclas en los 11 rubros, con Bootstrap 3 cargado encima para simular el CMS. No hubo errores de JS.
+- También se probaron, con el endpoint simulado, la validación, el envío correcto (revisando el JSON enviado), el envío con plan elegido y el error del servidor.
+- En móvil (390 px) ninguna página se desborda a lo ancho dentro de la capa.

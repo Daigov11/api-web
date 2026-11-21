@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Genera páginas HTML autocontenidas (HTML + CSS + JS en un solo archivo)."""
-import math, os, sys, html
+import math, os, re, sys, html
 from data import *
 
 OUT = sys.argv[1]
@@ -294,12 +294,24 @@ body{overflow-x:clip}
 
 JS = r"""
 (function(){
-  var D = window.PAGE || {};
-  var $ = function(s,c){return (c||document).querySelector(s)};
-  var $$ = function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
+  var D = /*DATA*/{};
+  var root = document.querySelector('.awx-landing');
+  if(!root) return;
+  var $ = function(s,c){return (c||root).querySelector(s)};
+  var $$ = function(s,c){return Array.prototype.slice.call((c||root).querySelectorAll(s))};
   var lastFocus = null;
-  function open(ov){ if(!ov) return; lastFocus=document.activeElement; ov.classList.add('open'); document.body.classList.add('lock'); var f=ov.querySelector('.x'); if(f) f.focus(); }
-  function close(ov){ if(!ov) return; ov.classList.remove('open'); if(!$('.ov.open')) document.body.classList.remove('lock'); if(lastFocus) lastFocus.focus(); }
+  function open(ov){ if(!ov) return; lastFocus=document.activeElement; ov.classList.add('open'); root.classList.add('lock'); var f=ov.querySelector('.x'); if(f) f.focus(); }
+  function close(ov){ if(!ov) return; ov.classList.remove('open'); if(!$('.ov.open')) root.classList.remove('lock'); if(lastFocus) lastFocus.focus(); }
+
+  // Anclas (#seccion): se resuelven dentro de la capa, sin cambiar la URL del CMS
+  $$('a[href^="#"]').forEach(function(a){
+    a.addEventListener('click',function(e){
+      var h=a.getAttribute('href'); if(!h || h==='#') return;
+      e.preventDefault();
+      if(h==='#top'){ root.scrollTo({top:0,behavior:'smooth'}); return; }
+      var t=root.querySelector(h); if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  });
   $$('.ov').forEach(function(ov){
     ov.addEventListener('click',function(e){ if(e.target===ov || e.target.closest('[data-close]')) close(ov); });
   });
@@ -314,28 +326,13 @@ JS = r"""
       e.preventDefault();
       var plan = b.getAttribute('data-plan') || '';
       var pl = $('#m-plan'); if(pl){ pl.textContent = plan ? plan : 'Por definir en la demo'; }
+      var hp = $('#consulta input[name=plan]'); if(hp){ hp.value = plan; }
       var pd = $('#drawer'); if(pd && pd.classList.contains('open')) close(pd);
       open(cm);
     });
   });
 
-  // Formularios: no envían datos, muestran el resumen
-  $$('form.cform').forEach(function(f){
-    f.addEventListener('submit',function(e){
-      e.preventDefault();
-      var dl = $('#sum-list'); if(!dl) return;
-      dl.innerHTML='';
-      $$('input,select,textarea',f).forEach(function(i){
-        if(!i.name) return;
-        var dt=document.createElement('dt'); dt.textContent=i.getAttribute('data-label')||i.name;
-        var dd=document.createElement('dd'); dd.textContent=i.value.trim()||'—';
-        dl.appendChild(dt); dl.appendChild(dd);
-      });
-      if(cm && cm.classList.contains('open')) close(cm);
-      open($('#resumen'));
-    });
-  });
-
+/*FORM*/
   // Rueda del hero
   var ring = $('.wheel-ring'), turns = 0;
   var sb = $('[data-spin]');
@@ -349,7 +346,7 @@ JS = r"""
   // Sin movimiento
   $$('[data-motion]').forEach(function(b){
     b.addEventListener('click',function(){
-      var on = document.body.classList.toggle('no-motion');
+      var on = root.classList.toggle('no-motion');
       $$('[data-motion]').forEach(function(x){ x.textContent = on ? 'Con movimiento' : 'Sin movimiento'; x.setAttribute('aria-pressed', on); });
     });
   });
@@ -416,7 +413,184 @@ JS = r"""
 })();
 """
 
-def page(title, desc, body, data_js):
+# ---------- Envío real al endpoint de Apiworking (igual que formulario.html) ----------
+FORM_ENDPOINT = "https://api-centralizador.apiworking.pe/api/Administrativo/sendFormContact"
+FORM_DEST = ["danielaapiworking@gmail.com", "alo.midocto@gmail.com", "rexlobo45699@gmail.com", "josephchamorrotv@gmail.com"]
+
+FORM_JS = r"""
+  // ===== Formulario de contacto: POST al centralizador de Apiworking =====
+  var AWX_FORM_ENDPOINT = '__ENDPOINT__';
+  var AWX_FORM_DEST = __DEST__;
+  var awxIp = '';
+  // Campos que tienen su propio lugar en el endpoint; el resto se suma a giroNegocio
+  var AWX_OWN = { nombre:1, whatsapp:1, negocio:1, rubro:1 };
+
+  if($('form.cform')){
+    fetch('https://api.ipify.org?format=json', { cache: 'no-store' })
+      .then(function(r){ return r.json(); })
+      .then(function(d){ awxIp = d && d.ip ? d.ip : ''; })
+      .catch(function(){ awxIp = ''; });
+  }
+
+  function awxBadges(f, items, type){
+    var box = $('.awx-badges', f); if(!box) return;
+    box.innerHTML = '';
+    items.forEach(function(t){ var s=document.createElement('span'); s.className=type; s.textContent=t; box.appendChild(s); });
+  }
+  function awxVal(f, name){ var el=f.querySelector('[name="'+name+'"]'); return el ? String(el.value||'').trim() : ''; }
+
+  $$('input[name=whatsapp]').forEach(function(t){
+    t.addEventListener('input',function(){ this.value = this.value.replace(/\D/g,''); });
+  });
+
+  $$('form.cform').forEach(function(f){
+    var btn = $('[data-send]', f);
+    if(!btn) return;
+    var txt = $('.awx-txt', btn), ico = $('.awx-ico', btn), label = txt ? txt.textContent : '';
+    function send(){
+      var nombre = awxVal(f,'nombre'), tel = awxVal(f,'whatsapp'), negocio = awxVal(f,'negocio'), rubro = awxVal(f,'rubro');
+      var warn = [];
+      if(!nombre) warn.push('Falta tu nombre');
+      if(!tel || tel.length < 7) warn.push('WhatsApp inválido');
+      if(!negocio) warn.push('Falta el nombre del negocio');
+      if(!rubro) warn.push('Selecciona el rubro');
+      if(warn.length){ awxBadges(f, warn, 'warn'); return; }
+
+      // giroNegocio: rubro + datos extra (plan, locales, necesidad...) para que lleguen en el correo
+      var extra = [];
+      $$('input,select,textarea', f).forEach(function(i){
+        if(!i.name || AWX_OWN[i.name]) return;
+        var v = String(i.value||'').trim(); if(!v) return;
+        extra.push((i.getAttribute('data-label')||i.name) + ': ' + v);
+      });
+      var giro = rubro.toUpperCase() + (extra.length ? ' | ' + extra.join(' | ') : '');
+
+      var body = JSON.stringify({
+        nombreCompleto: nombre,
+        telefono: tel,
+        nombreNegocio: negocio,
+        giroNegocio: giro,
+        ipCreacion: awxIp || '0.0.0.0',
+        destinatarios: AWX_FORM_DEST
+      });
+
+      btn.disabled = true;
+      if(txt) txt.textContent = 'Enviando...';
+      if(ico) ico.innerHTML = '<span class="awx-spin" aria-hidden="true"></span>';
+      awxBadges(f, [], 'ok');
+
+      fetch(AWX_FORM_ENDPOINT, {
+        method: 'POST',
+        headers: { 'accept': 'text/plain', 'Content-Type': 'application/json' },
+        body: body,
+        redirect: 'follow'
+      })
+        .then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+        .then(function(){
+          var dl = $('#sum-list');
+          if(dl){
+            dl.innerHTML = '';
+            $$('input,select,textarea', f).forEach(function(i){
+              if(!i.name) return; var v = String(i.value||'').trim(); if(!v) return;
+              var dt=document.createElement('dt'); dt.textContent=i.getAttribute('data-label')||i.name;
+              var dd=document.createElement('dd'); dd.textContent=v;
+              dl.appendChild(dt); dl.appendChild(dd);
+            });
+          }
+          f.reset();
+          awxBadges(f, ['¡Enviado! Te contactaremos pronto.'], 'ok');
+          if(cm && cm.classList.contains('open')) close(cm);
+          open($('#resumen'));
+        })
+        .catch(function(){ awxBadges(f, ['Error al enviar. Intenta nuevamente.'], 'err'); })
+        .then(function(){
+          btn.disabled = false;
+          if(txt) txt.textContent = label;
+          if(ico) ico.innerHTML = '';
+        });
+    }
+    btn.addEventListener('click', send);
+    f.addEventListener('submit', function(e){ e.preventDefault(); send(); });
+  });
+""".replace("__ENDPOINT__", FORM_ENDPOINT).replace("__DEST__", "[" + ",".join("'" + d + "'" for d in FORM_DEST) + "]")
+
+SEND_BTN = '<button class="submit" type="button" data-send><span class="awx-ico" aria-hidden="true"></span><span class="awx-txt">Enviar consulta</span></button>\n<div class="awx-badges" aria-live="polite"></div>'
+
+# ---------- Técnicas de formulario.html (guía Apiworking) ----------
+# 1) Todo vive dentro de <div class="awx-overlay awx-landing">: una capa fija a pantalla
+#    completa (z-index 9999) que se sobrepone al contenedor HTML del CMS y hace su propio scroll.
+# 2) Todo el CSS va con el prefijo .awx-landing para ganarle a los estilos del CMS y no afectarlo.
+# 3) Se anulan los ::before/::after "clearfix" que el CMS pone a .wrap/.container.
+# 4) Clases que chocan con Bootstrap (.modal, .lead) se renombran con prefijo awx-.
+# 5) Sin entidades HTML (&nbsp; etc.), sin globales en window y JS ES5 (var/function).
+# 6) Los enlaces #ancla se resuelven por JS (scrollIntoView) dentro de la capa.
+SCOPE = ".awx-landing"
+RENAME = ("modal", "lead")
+
+def _scope_sel(s):
+    s = s.strip()
+    if s == ":root": return SCOPE
+    if s == "html": return ".awx-overlay"
+    if s.startswith("body.lock"): return ".awx-overlay.lock" + s[len("body.lock"):]
+    if s.startswith("body."): return SCOPE + s[4:]
+    if s == "body": return SCOPE
+    if s.startswith("body "): return SCOPE + s[4:]
+    return SCOPE + " " + s
+
+def _split_top(css):
+    """Devuelve [(prelude, contenido)] de nivel superior."""
+    out, i, n = [], 0, len(css)
+    while i < n:
+        j = css.find("{", i)
+        if j < 0: break
+        pre = css[i:j].strip()
+        depth, k = 1, j + 1
+        while depth and k < n:
+            if css[k] == "{": depth += 1
+            elif css[k] == "}": depth -= 1
+            k += 1
+        out.append((pre, css[j + 1:k - 1]))
+        i = k
+    return out
+
+def scope_css(css):
+    css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+    res = []
+    for pre, body in _split_top(css):
+        if pre.startswith("@media") or pre.startswith("@supports"):
+            res.append(pre + "{" + scope_css(body) + "}")
+        elif pre.startswith("@"):
+            res.append(pre + "{" + body + "}")
+        else:
+            sels = ",".join(_scope_sel(x) for x in pre.split(","))
+            res.append(sels + "{" + body.strip() + "}")
+    return "\n".join(res)
+
+BASE_CSS = """.awx-overlay{position:fixed;inset:0;z-index:9999;overflow:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
+.awx-landing .wrap::before,.awx-landing .wrap::after,.awx-landing .hdr-in::before,.awx-landing .hdr-in::after{content:none!important;display:none!important}
+.awx-landing .awx-badges{display:flex;gap:8px;flex-wrap:wrap}
+.awx-landing .awx-badges span{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:13px;font-weight:700}
+.awx-landing .awx-badges .ok{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
+.awx-landing .awx-badges .warn{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}
+.awx-landing .awx-badges .err{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.awx-landing .awx-spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.45);border-top-color:#fff;border-radius:50%;display:inline-block;animation:awxSpin .75s linear infinite}
+.awx-landing .submit[disabled]{opacity:.7;cursor:wait}
+@keyframes awxSpin{to{transform:rotate(360deg)}}"""
+
+def _rename_classes(html_body, css):
+    for c in RENAME:
+        css = re.sub(r"\.%s(?![\w-])" % c, ".awx-" + c, css)
+    def fix(m):
+        toks = ["awx-" + t if t in RENAME else t for t in m.group(1).split()]
+        return 'class="' + " ".join(toks) + '"'
+    return re.sub(r'class="([^"]*)"', fix, html_body), css
+
+def page(title, desc, body, data_js, extra_css=""):
+    body = body.replace("&nbsp;", " ")
+    body, css = _rename_classes(body, CSS + extra_css)
+    css = scope_css(css) + "\n" + BASE_CSS
+    js = JS.replace("/*DATA*/{}", data_js, 1).replace("/*FORM*/", FORM_JS, 1)
+    assert "&nbsp;" not in body and "window.PAGE" not in js
     return f"""<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -425,14 +599,17 @@ def page(title, desc, body, data_js):
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
 {FONT}
-<style>{CSS}</style>
+<style>
+{css}
+</style>
 </head>
 <body>
+<div class="awx-overlay awx-landing" lang="es" role="document" aria-label="{esc(title)}">
 {body}
 <script>
-window.PAGE = {data_js};
-{JS}
+{js}
 </script>
+</div>
 </body>
 </html>
 """
@@ -447,7 +624,8 @@ def ph(label, cls=""):
     return f'<div class="ph {cls}" role="img" aria-label="{esc(label)}"><span>{esc(label)}</span></div>'
 
 def href(k):
-    return ROUTES[k]
+    r = ROUTES[k].strip("/")
+    return BASE_URL + "/" + (r + "/" if r else "")
 
 PLANT = '''<svg viewBox="0 0 120 120" aria-hidden="true"><path d="M60 112V44" stroke="#5a8f3c" stroke-width="4" fill="none"/><ellipse cx="44" cy="62" rx="16" ry="7" fill="#8cc56b" transform="rotate(-30 44 62)"/><ellipse cx="76" cy="56" rx="16" ry="7" fill="#8cc56b" transform="rotate(30 76 56)"/><ellipse cx="46" cy="40" rx="13" ry="6" fill="#a7d58a" transform="rotate(-35 46 40)"/><ellipse cx="74" cy="34" rx="13" ry="6" fill="#a7d58a" transform="rotate(35 74 34)"/><ellipse cx="60" cy="20" rx="7" ry="12" fill="#b9e19f"/><circle cx="60" cy="16" r="4" fill="#f4c35b"/><ellipse cx="60" cy="112" rx="26" ry="5" fill="#d9b98a"/></svg>'''
 
@@ -482,7 +660,8 @@ def overlays(rubro_name, rubro_key=None, plans=None):
 <label>WhatsApp<input name="whatsapp" data-label="WhatsApp" placeholder="9XX XXX XXX" inputmode="tel" autocomplete="tel"></label></div>
 <div class="fgrid"><label>Negocio<input name="negocio" data-label="Negocio" placeholder="Nombre de tu negocio"></label>
 <label>Locales<select name="locales" data-label="Locales"><option>1 local</option><option>2 locales</option><option>3 o más locales</option></select></label></div>
-<label>Necesidad<textarea name="necesidad" data-label="Necesidad" placeholder="Cuéntanos qué te gustaría revisar"></textarea></label>'''
+<label>Necesidad<textarea name="necesidad" data-label="Necesidad" placeholder="Cuéntanos qué te gustaría revisar"></textarea></label>
+<input type="hidden" name="plan" data-label="Plan" value="">'''
     drawer = ""
     if plans:
         btns = "".join(f'<button type="button">{esc(p["name"])}</button>' for p in plans)
@@ -501,17 +680,17 @@ def overlays(rubro_name, rubro_key=None, plans=None):
 <div class="eyebrow">{esc(rubro_name.upper())} · CONSULTA</div>
 <h2 id="c-t" style="font-size:32px">Tu próximo paso, más simple.</h2>
 <p class="small" style="margin-top:8px">Plan de interés: <b id="m-plan">Por definir en la demo</b></p>
-<form class="cform" style="padding:20px 0 0">{form_fields}
-<button class="submit" type="submit">Preparar mi consulta</button>
-<p class="small">Vista de demostración. El envío se conectará al canal comercial.</p></form>
+<form class="cform" style="padding:20px 0 0" novalidate onsubmit="return false;">{form_fields}
+{SEND_BTN}
+<p class="small">Un asesor te contactará por WhatsApp para coordinar la demo.</p></form>
 </div></div>
 <div class="ov summary" id="resumen" role="dialog" aria-modal="true" aria-labelledby="r-t"><div class="modal">
 <button class="x" data-close aria-label="Cerrar">×</button>
-<div class="eyebrow">RESUMEN</div>
-<h2 id="r-t" style="font-size:32px">Tu consulta, en un solo lugar.</h2>
+<div class="eyebrow">CONSULTA ENVIADA</div>
+<h2 id="r-t" style="font-size:32px">Recibimos tu consulta.</h2>
 <dl id="sum-list"></dl>
-<div class="pend">Revisa tus datos y prioridades con el equipo comercial. Esta vista no guarda ni envía información.</div>
-<button class="btn btn-dk btn-block" data-close style="margin-top:16px">Cerrar consulta</button>
+<div class="pend">Un asesor de Apiworking te escribirá pronto por WhatsApp para coordinar tu demo.</div>
+<button class="btn btn-dk btn-block" data-close style="margin-top:16px">Cerrar</button>
 </div></div>
 <div class="ov" id="funcion" role="dialog" aria-modal="true" aria-labelledby="fn-t"><div class="modal">
 <button class="x" data-close aria-label="Cerrar">×</button>
@@ -776,8 +955,8 @@ def rubro_page(k):
 <p class="lead" style="color:var(--dk)">Cuéntanos cómo trabajas y qué necesitas resolver. Revisaremos el alcance, los módulos y las condiciones para tu operación.</p>
 <div class="interest"><b>TU FUNCIÓN DE INTERÉS</b>Explora una función o cuéntanos qué necesitas.</div>
 <p class="small" style="margin-top:14px;color:var(--dk)">La disponibilidad de funciones e integraciones se confirma en la demo y cotización.</p></div>
-<form class="cform"><h3 style="font-size:26px">Prepara tu consulta</h3>
-<p class="small">Formulario de demostración. Los campos muestran ejemplos y aún no capturan datos.</p>
+<form class="cform" novalidate onsubmit="return false;"><h3 style="font-size:26px">Prepara tu consulta</h3>
+<p class="small">Déjanos tus datos y un asesor te contactará por WhatsApp.</p>
 <div class="rubro-box"><small>Rubro</small><b>{esc(name)}</b><input type="hidden" name="rubro" data-label="Rubro" value="{esc(name)}"></div>
 <label>Nombre<input name="nombre" data-label="Nombre" placeholder="Tu nombre" autocomplete="name"></label>
 <div class="fgrid"><label>WhatsApp<input name="whatsapp" data-label="WhatsApp" placeholder="9XX XXX XXX" inputmode="tel" autocomplete="tel"></label>
@@ -785,9 +964,8 @@ def rubro_page(k):
 <label>Negocio<input name="negocio" data-label="Negocio" placeholder="Nombre de tu negocio"></label>
 <label>Especialidad<input name="especialidad" data-label="Especialidad" placeholder="Ej. {esc(d["para"].split(" · ")[0])}"></label>
 <label>Necesidad<textarea name="necesidad" data-label="Necesidad" placeholder="Cuéntanos qué te gustaría revisar"></textarea></label>
-<button class="submit" type="submit">Preparar mi consulta</button>
-<p class="small">Vista de demostración. El envío se conectará al canal comercial.</p>
-<div class="before"><b>Antes de contactar</b><span>Rubro: {esc(name)}</span><span>Explora una función o cuéntanos qué necesitas.</span><span class="small">Revisa tus datos y prioridades con el equipo comercial. Esta vista no guarda ni envía información.</span></div>
+{SEND_BTN}
+<div class="before"><b>Antes de contactar</b><span>Rubro: {esc(name)}</span><span>Explora una función o cuéntanos qué necesitas.</span><span class="small">Revisa tus datos antes de enviar.</span></div>
 </form></div></section>'''
 
     body = (header_rubro(k) + "<main>" + hero + eco + pack + special + mapa + funcs + benefits + pay + precios + testi + faq + contact + "</main>"
@@ -892,8 +1070,7 @@ def inicio_page():
 <section class="cta"><div class="wrap"><div class="cta-box"><h2 class="hd">Tu siguiente paso tiene nombre de rubro.</h2><p class="lead">Explora las herramientas que tienen sentido para tu día a día.</p><a class="btn btn-w" style="margin-top:24px" href="#rubros">Encuentra tu solución ↗</a></div></div></section>
 </main>
 {footer(None)}'''
-    p = page("Apiworking", "Hecho para tu negocio. Pensado para que vuelvan. Venta, operación, atención y fidelidad en un ecosistema.", body, "{}")
-    return p.replace("</style>", extra_css + "</style>", 1)
+    return page("Apiworking", "Hecho para tu negocio. Pensado para que vuelvan. Venta, operación, atención y fidelidad en un ecosistema.", body, "{}", extra_css)
 
 files = {"inicio/index.html": inicio_page()}
 for k in ORDER:

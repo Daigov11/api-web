@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # Contenido recolectado del prototipo Figma "WEB APIWORKING".
 
+BASE_URL = "https://apiworking.com.pe"
+
 ROUTES = {
     "inicio": "/",
     "resto": "/sistema-para-restaurantes",
