@@ -122,7 +122,7 @@ python3 _generador/figma/build_all.py resto      # solo una (claves: inicio, res
 
 ## Pendientes
 
-- [ ] Rutas reales de Fast Food, Asistencia (¿`/ecosistema/apistaff`?) y Piscinas.
+- [ ] En pausa (2026-11-23), por decisión del usuario: Fast Food, Asistencia y Piscinas aún no tienen contenido en el sitio, así que se dejan con sus rutas provisionales hasta nuevo aviso.
 - [ ] Hacer un envío real de prueba desde el CMS. En local se probó con el endpoint simulado.
 - [ ] Revisión visual página por página contra el Figma. Restaurantes escritorio se comparó píxel a píxel; el resto se revisó por muestreo.
 - [ ] El texto en curva de la rueda tiene un espaciado algo distinto al de Figma, porque mi SVG usa la fuente del navegador.
