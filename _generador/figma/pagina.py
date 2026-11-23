@@ -27,6 +27,15 @@ TEXT_FIX = {
 }
 
 
+# Botones que disparaban animaciones: ahora son automáticas y el botón se oculta (conserva su espacio)
+AUTO_BUTTONS = {"Control de movimiento de cabecera", "Ver crecer", "Ver entrada escalonada", "Ver giro"}
+
+
+def n_is_button(node):
+    """Solo los botones visibles de movimiento alternan la animación (no los temporizadores ni variantes)."""
+    return node["name"] in ("Sin movimiento", "Cambiar movimiento") or "movimiento" in node["name"].lower()
+
+
 def slug(s):
     return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
 
@@ -43,6 +52,7 @@ class Page:
         self.overlays = {}                    # id frame -> html
         self.templates = {}                   # id componente -> html
         self.pending_ov, self.pending_tpl = [], []
+        self.auto = {}                        # conjunto de variantes -> secuencia automática
         self.parent = {}
         for n in list(self.idx.values()):
             for c in n.get("children", []):
@@ -98,7 +108,8 @@ class Page:
                         s = self.set_of(dest)
                         sname = (s or {}).get("name", "")
                         if "movimiento" in name or sname.startswith(("Cabecera 360", "Espigas")) or "Fase=" in dn["name"]:
-                            acts.append({"k": "motion"})
+                            if trig == "ON_CLICK" and n_is_button(node):
+                                acts.append({"k": "motion"})
                             continue
                         if trig == "AFTER_TIMEOUT" and s and len(s.get("children", [])) > 8:
                             continue        # bucles de animación largos: los reemplaza CSS
@@ -152,6 +163,34 @@ class Page:
                 h["data-send"] = str(h.pop("data-fz")) if "data-fz" in h else "x"
             if n["name"].startswith(("Anillo exterior", "Anillo interior")):
                 conv.hooks.setdefault(n["id"], {})["data-ring"] = "out" if "exterior" in n["name"] else "in"
+            if n["type"] == "TEXT_PATH" and n.get("characters") and not n.get("_ring"):
+                items = []
+                for w in n["characters"].split("•"):
+                    w = w.strip()
+                    if w and w not in items:
+                        items.append(w)
+                if any(n["name"] == "Texto circular editable" and self.idx.get(self.parent.get(n["id"], ""), {}).get("name", "").startswith("Anillo exterior") for _ in [0]):
+                    for extra in ("Logística", "Luka IA"):
+                        if extra not in items:
+                            items.append(extra)
+                one = "".join(w + "  •  " for w in items)
+                fs = (n.get("style") or {}).get("fontSize", 16)
+                est = len(one) * fs * (0.62 if one.upper() == one else 0.55)
+                circ = 3.1416 * (n.get("size") or {}).get("x", n["absoluteBoundingBox"]["width"])
+                n["characters"] = one * max(1, round(circ * 0.985 / est))
+                n["_ring"] = True
+            if n["name"] in AUTO_BUTTONS or (n["type"] == "TEXT" and n.get("characters") in AUTO_BUTTONS and self.idx.get(self.parent.get(n["id"], ""), {}).get("type") == "INSTANCE"):
+                conv.hooks.setdefault(n["id"], {})["data-hide"] = "1"
+            if n["type"] == "INSTANCE":
+                s0 = self.set_of(n.get("componentId") or "")
+                if s0 and s0["type"] == "COMPONENT_SET" and s0["name"].startswith("Quinua"):
+                    seq = [c["id"] for c in s0["children"] if c["name"] in ("Estado=Semilla", "Estado=Brote", "Estado=Creciendo", "Estado=Plena")]
+                    for c in seq:
+                        if c not in self.templates and c not in self.pending_tpl:
+                            self.pending_tpl.append(c)
+                    self.auto[s0["id"]] = {"seq": seq, "ms": [700, 700, 800, 2600]}
+                if s0 and s0["type"] == "COMPONENT_SET" and s0["name"].startswith("Explorador"):
+                    conv.hooks.setdefault(n["id"], {})["data-enter"] = "1"
             if n["type"] == "TEXT" and n.get("characters") in TEXT_FIX:
                 n["characters"] = TEXT_FIX[n["characters"]]
                 n["characterStyleOverrides"] = []
@@ -221,4 +260,4 @@ def build_page(desk_id, mob_id, rubro, title, desc, frame_route):
     from fig2html import rgba
     bg = rgba(bgf[-1]["color"]) if bgf else "#ffffff"
     import shell
-    return shell.page(title, desc, bg, desk, mob, pg.overlays, pg.templates, pg.table, rubro)
+    return shell.page(title, desc, bg, desk, mob, pg.overlays, pg.templates, pg.table, rubro, pg.auto)

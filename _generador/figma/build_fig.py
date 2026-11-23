@@ -20,7 +20,7 @@ def _uniq_svg(svg):
     return svg
 
 
-def build(root, assets, setup=None, figma_svg_cache=True):
+def build(root, assets, setup=None, figma_svg_cache=False):
     """root: nodo Figma. setup(conv): permite registrar hooks/replace. Devuelve html."""
     fills = None
     req = {}

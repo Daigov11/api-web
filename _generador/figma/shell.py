@@ -18,8 +18,10 @@ CSS = """
 .awx-landing [data-fz],.awx-landing [data-send]{cursor:pointer}
 .awx-landing [data-fz]:focus-visible,.awx-landing [data-send]:focus-visible{outline:3px solid #6b2b8f;outline-offset:2px}
 .awx-landing [data-fixed]{position:fixed!important;z-index:50}
-.awx-landing [data-ring]{animation:fzSpin 70s linear infinite;transform-origin:50% 50%}
-.awx-landing [data-ring=in]{animation-duration:90s;animation-direction:reverse}
+.awx-landing [data-ring]{animation:fzSpin 40s linear infinite;transform-origin:50% 50%}
+.awx-landing [data-ring=in]{animation-duration:55s;animation-direction:reverse}
+.awx-landing svg{overflow:visible}
+.awx-landing [data-hide]{visibility:hidden!important;pointer-events:none!important}
 .awx-landing.fz-still [data-ring],.awx-landing.fz-still .fz-enter>*{animation:none!important}
 @keyframes fzSpin{to{transform:rotate(360deg)}}
 .awx-landing .fz-enter>*{animation:fzIn .42s ease-out both}
@@ -44,7 +46,7 @@ JS = r"""
 (function(){
   var root = document.querySelector('.awx-landing');
   if(!root) return;
-  var T = __TABLE__, RUBRO = __RUBRO__, EP = __EP__, DEST = __DEST__;
+  var T = __TABLE__, RUBRO = __RUBRO__, EP = __EP__, DEST = __DEST__, AUTO = __AUTO__;
   var $$ = function(s,c){ return Array.prototype.slice.call((c||root).querySelectorAll(s)); };
   var desk = root.querySelector('.fz-desk'), mob = root.querySelector('.fz-mob');
   var stack = [], ip = '';
@@ -145,6 +147,36 @@ JS = r"""
   $$('[data-fz],[data-send]').forEach(function(e){ e.setAttribute('tabindex','0'); e.setAttribute('role', e.getAttribute('data-send') ? 'button' : (e.getAttribute('role') || 'button')); });
   timers(tree());
 
+  // ---- animaciones automáticas (antes con botón) ----
+  function swapTo(set, id){
+    [desk, mob].forEach(function(t){
+      if(!t) return;
+      var cur = t.querySelector('[data-set="'+set+'"]'), tpl = root.querySelector('template[data-tpl="'+id+'"]');
+      if(!cur || !tpl) return;
+      var nu = tpl.content.firstElementChild.cloneNode(true);
+      KEEP.forEach(function(k){ if(cur.style[k]) nu.style[k] = cur.style[k]; });
+      nu.setAttribute('data-set', set);
+      cur.parentNode.replaceChild(nu, cur);
+    });
+  }
+  Object.keys(AUTO).forEach(function(set){
+    var cfg = AUTO[set], i = 0;
+    (function step(){
+      if(!root.classList.contains('fz-still')){ swapTo(set, cfg.seq[i]); i = (i + 1) % cfg.seq.length; }
+      setTimeout(step, cfg.ms[(i + cfg.seq.length - 1) % cfg.seq.length] || 900);
+    })();
+  });
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(!e.isIntersecting) return;
+        var el = e.target, inner = el.querySelector('[data-set]') || el;
+        if(!root.classList.contains('fz-still')){ el.classList.remove('fz-enter'); void el.offsetWidth; el.classList.add('fz-enter'); }
+      });
+    }, {root: root, threshold: 0.25});
+    $$('[data-enter]').forEach(function(e){ io.observe(e); });
+  }
+
   // ---- formulario: POST al centralizador de Apiworking ----
   if(root.querySelector('input[name]')){
     fetch('https://api.ipify.org?format=json', {cache:'no-store'}).then(function(r){ return r.json(); })
@@ -192,13 +224,14 @@ JS = r"""
 """
 
 
-def page(title, desc, bg, desk_html, mob_html, overlays, templates, table, rubro):
+def page(title, desc, bg, desk_html, mob_html, overlays, templates, table, rubro, auto=None):
     ovs = "".join(
         f'<div class="fz-ovl{" fz-dim" if w not in (1440, 390) else ""}" data-ov="{html.escape(i)}" data-w="{w}" hidden role="dialog" aria-modal="true"><div class="fz-ovf">{h}</div></div>'
         for i, (h, w) in overlays.items())
     tpls = "".join(f'<template data-tpl="{html.escape(i)}">{h}</template>' for i, h in templates.items())
     js = (JS.replace("__TABLE__", json.dumps(table, ensure_ascii=False, separators=(",", ":")))
             .replace("__RUBRO__", json.dumps(rubro, ensure_ascii=False))
+            .replace("__AUTO__", json.dumps(auto or {}, separators=(",", ":")))
             .replace("__EP__", json.dumps("https://api-centralizador.apiworking.pe/api/Administrativo/sendFormContact"))
             .replace("__DEST__", json.dumps(["danielaapiworking@gmail.com", "alo.midocto@gmail.com", "rexlobo45699@gmail.com", "josephchamorrotv@gmail.com"])))
     js = js.replace("</", "<\\/")

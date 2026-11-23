@@ -124,6 +124,7 @@ class SVG:
         vn = n.get("vectorNetwork") or {}
         V, S = vn.get("vertices") or [], vn.get("segments") or []
         start_frac = 0
+        plen = 0
         if V and S:
             d, cur = [], None
             for sg in S:
@@ -135,6 +136,16 @@ class SVG:
                 cur = sg["end"]
             sd = n.get("textPathStartData") or {}
             start_frac = (sd.get("segment", 0) + sd.get("position", 0)) / len(S)
+            plen = 0
+            for sg in S:
+                p0, p1 = V[sg["start"]]["position"], V[sg["end"]]["position"]
+                t0, t1 = sg.get("startTangent", {"x": 0, "y": 0}), sg.get("endTangent", {"x": 0, "y": 0})
+                pts = [(p0["x"], p0["y"]), (p0["x"] + t0["x"], p0["y"] + t0["y"]), (p1["x"] + t1["x"], p1["y"] + t1["y"]), (p1["x"], p1["y"])]
+                prev = pts[0]
+                for k in range(1, 41):
+                    u = k / 40
+                    q = [(1-u)**3*pts[0][j] + 3*(1-u)**2*u*pts[1][j] + 3*(1-u)*u**2*pts[2][j] + u**3*pts[3][j] for j in (0, 1)]
+                    plen += math.hypot(q[0]-prev[0], q[1]-prev[1]); prev = q
             self.defs.append(f'<path id="{pid}" d="{" ".join(d)}"/>')
         else:
             rx, ry = w / 2, h / 2
@@ -145,8 +156,9 @@ class SVG:
         tc = st.get("textCase")
         if tc == "UPPER":
             txt = txt.upper()
+        fit = f' textLength="{plen*0.985:.1f}" lengthAdjust="spacing"' if plen else ""
         return (f'<g {tr}><text font-family="Inter,system-ui,sans-serif" font-size="{fs}" font-weight="{st.get("fontWeight",400)}" '
-                f'letter-spacing="{ls}" fill="{col}"><textPath href="#{pid}" startOffset="{start_frac*100:.3f}%">{txt}</textPath></text></g>')
+                f'letter-spacing="{ls}" fill="{col}"><textPath href="#{pid}" startOffset="{start_frac*100:.3f}%"{fit}>{txt}</textPath></text></g>')
 
     def walk(self, n, opacity=1.0):
         if not n.get("visible", True):
@@ -188,7 +200,7 @@ class SVG:
         body = self.walk(self.root, 1.0)
         defs = f"<defs>{''.join(self.defs)}</defs>" if self.defs else ""
         return (f'<svg width="{self.w:.2f}" height="{self.h:.2f}" viewBox="0 0 {self.w:.2f} {self.h:.2f}" fill="none" '
-                f'xmlns="http://www.w3.org/2000/svg">{defs}{body}</svg>')
+                f'overflow="visible" xmlns="http://www.w3.org/2000/svg">{defs}{body}</svg>')
 
 
 def render(node):

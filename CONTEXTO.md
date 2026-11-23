@@ -101,7 +101,8 @@ python3 _generador/figma/build_all.py resto      # solo una (claves: inicio, res
 | URL | Abre el enlace en una pestaña nueva (por ejemplo, el video de YouTube). |
 | Capa superpuesta / cambiar capa / cerrar / atrás | Capas con fondo oscurecido. Se cierran con Escape o con clic fuera. |
 | Cambiar a (variantes) | Cambia la instancia por la variante, con entrada escalonada. |
-| Rueda de 25 variantes y espigas | Animación CSS continua. |
+| Rueda de 25 variantes y espigas | Animación CSS continua: el anillo exterior gira en sentido horario y el interior al revés. |
+| "Ver giro", "Ver crecer", "Ver entrada escalonada" | **Automáticos** (pedido del usuario, 2026-11-23). La rueda gira siempre, la planta crece en bucle (Semilla → Brote → Creciendo → Plena) y el explorador hace su entrada al aparecer en pantalla. Los botones se ocultan, pero conservan su espacio. |
 | "Sin movimiento" / "Cambiar movimiento" | Activa o desactiva todas las animaciones. |
 | Variables de Figma | La API no da sus valores. El modal de función muestra la función pulsada y el rubro. |
 | Hover del explorador | No se replica: depende de variables que la API no expone. |
@@ -125,7 +126,10 @@ python3 _generador/figma/build_all.py resto      # solo una (claves: inicio, res
 - [ ] En pausa (2026-11-23), por decisión del usuario: Fast Food, Asistencia y Piscinas aún no tienen contenido en el sitio, así que se dejan con sus rutas provisionales hasta nuevo aviso.
 - [x] Envío real de prueba desde el CMS: el usuario lo probó el 2026-11-23 y el correo llegó.
 - [ ] Revisión visual página por página contra el Figma. Restaurantes escritorio se comparó píxel a píxel; el resto se revisó por muestreo.
-- [ ] El texto en curva de la rueda tiene un espaciado algo distinto al de Figma, porque mi SVG usa la fuente del navegador.
+- Anillo exterior de la rueda (pedido del usuario, 2026-11-23):
+  - cada palabra aparece una sola vez y se añaden **"Logística"** y **"Luka IA"**;
+  - el texto se ajusta para cubrir todo el círculo (`textLength`);
+  - el anillo interior repite sus palabras hasta llenarlo.
 - [ ] Peso de las páginas, de 0,6 a 0,9 MB. Se puede reducir si la base de datos tiene límite.
 
 ## Verificación realizada (2026-11-23)
