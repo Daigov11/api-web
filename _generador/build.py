@@ -48,6 +48,12 @@ h3{font-size:22px;line-height:1.25;font-weight:700}
 /* placeholders de imagen */
 .ph{position:relative;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;border-radius:18px;background:repeating-linear-gradient(135deg,#eef7ea 0 14px,#e2f1dc 14px 28px);color:var(--mut);font-size:13px;font-weight:600;min-height:160px;overflow:hidden}
 .ph span{background:rgba(255,255,255,.85);padding:6px 12px;border-radius:999px}
+.ph.img{padding:0;background:#fff;overflow:hidden}
+.ph.img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.ph.img.contain{background:var(--g4)}
+.ph.img.contain img{object-fit:contain;padding:14%}
+.lb .ph.img img{object-fit:contain;background:#fff}
+.wheel-center .ph.img.contain img{padding:16% 22% 36%}
 /* tarjetas */
 .card{background:#fff;border-radius:var(--r);padding:28px;box-shadow:0 1px 0 var(--line)}
 .chip{display:inline-block;background:#ecfbe3;border-radius:999px;padding:6px 14px;font-size:13px;font-weight:600}
@@ -363,7 +369,7 @@ JS = r"""
 
   // Lightbox del pack
   var lb = $('#lightbox'), li = 0;
-  function lbShow(i){ var p = D.pieces||[]; if(!p.length) return; li=(i+p.length)%p.length; $('#lb-t').textContent=p[li][0]; $('#lb-img span').textContent=p[li][1]; $('#lb-n').textContent='Pieza '+(li+1)+' de '+p.length; }
+  function lbShow(i){ var p = D.pieces||[]; if(!p.length) return; li=(i+p.length)%p.length; $('#lb-t').textContent=p[li][0]; var box=$('#lb-img'); box.innerHTML=''; if(p[li][2]){ var im=document.createElement('img'); im.src=p[li][2]; im.alt=p[li][1]; box.appendChild(im); box.classList.add('img','cover'); } else { var sp=document.createElement('span'); sp.textContent=p[li][1]; box.appendChild(sp); box.classList.remove('img','cover'); } $('#lb-n').textContent='Pieza '+(li+1)+' de '+p.length; }
   $$('[data-piece]').forEach(function(b){ b.addEventListener('click',function(){ lbShow(+b.getAttribute('data-piece')); open(lb); }); });
   $$('[data-lb]').forEach(function(b){ b.addEventListener('click',function(){ lbShow(li + (+b.getAttribute('data-lb'))); }); });
 
@@ -620,7 +626,18 @@ def jstr(s):
 def jlist(items):
     return "[" + ",".join(items) + "]"
 
+USED_PH = set()
+
+def ph_url(label):
+    m = PH_IMG.get(label)
+    return IMG[m[0]] if m else ""
+
 def ph(label, cls=""):
+    m = PH_IMG.get(label)
+    if m:
+        USED_PH.add(label)
+        key, fit = m
+        return f'<div class="ph img {fit} {cls}"><img src="{IMG[key]}" alt="{esc(label)}" loading="lazy" decoding="async"></div>'
     return f'<div class="ph {cls}" role="img" aria-label="{esc(label)}"><span>{esc(label)}</span></div>'
 
 def href(k):
@@ -806,8 +823,8 @@ def rubro_page(k):
 </div></div></section>'''
 
     pieces_js = jlist([
-        "[" + jstr(wand_t) + "," + jstr(wand_img) + "]",
-        "[" + jstr("NFC Club de Fidelidad") + "," + jstr("Letrero NFC «Club de Fidelidad» sobre el mostrador") + "]",
+        "[" + jstr(wand_t) + "," + jstr(wand_img) + "," + jstr(ph_url(wand_img)) + "]",
+        "[" + jstr("NFC Club de Fidelidad") + "," + jstr("Letrero NFC «Club de Fidelidad» sobre el mostrador") + "," + jstr(ph_url("Letrero NFC «Club de Fidelidad» sobre el mostrador")) + "]",
         "[" + jstr("Tarjeta Wallet · " + w["name"]) + "," + jstr("Tarjeta de fidelidad digital " + w["name"] + " (ejemplo)") + "]",
     ])
 
@@ -1076,6 +1093,8 @@ files = {"inicio/index.html": inicio_page()}
 for k in ORDER:
     folder = k
     files[f"{folder}/{folder}.html"] = rubro_page(k)
+unused = set(PH_IMG) - USED_PH
+if unused: print("AVISO: imágenes sin recuadro:", sorted(unused))
 for path, content in files.items():
     full = os.path.join(OUT, path)
     os.makedirs(os.path.dirname(full), exist_ok=True)

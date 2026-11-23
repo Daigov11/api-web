@@ -1,7 +1,7 @@
 # Web Apiworking — contexto del proyecto
 
 Versión en código del prototipo de Figma **"WEB APIWORKING"**: la Home y 11 páginas, una por rubro.
-Fecha de este contexto: 2026-11-21.
+Fecha de este contexto: 2026-11-23.
 
 ## Reglas del proyecto (obligatorias)
 
@@ -11,7 +11,10 @@ Fecha de este contexto: 2026-11-21.
    - Las referencias web externas sí están permitidas: CDN, Google Fonts, URLs públicas.
    - La navegación entre páginas se hace con enlaces absolutos `<a href="https://apiworking.com.pe/ruta/">`, igual que en `formulario.html`.
 3. **Seguir las técnicas de `formulario.html`** (la guía de cómo se arman las páginas para el CMS de Apiworking). Ver la sección siguiente.
-4. **Imágenes:** pendiente de definir. Por ahora son marcadores CSS (`<div class="ph" role="img">`, sin `src`) con una etiqueta que dice qué foto va en cada lugar.
+4. **Imágenes:** se reutilizan por URL las que ya están subidas en el sitio actual (S3 `prod-cdb-backend-files` y `apiworking.com.pe/assets/...`). No se copia ningún archivo al proyecto.
+   - El catálogo completo, con 119 imágenes, está en `IMAGENES.md`.
+   - Cada recuadro sin imagen sigue siendo un marcador CSS con una etiqueta que dice qué foto va ahí.
+   - Para asignar una imagen: en `_generador/data.py`, añade la URL a `IMG` y relaciona el texto del recuadro con ella en `PH_IMG`. Si un texto de `PH_IMG` no coincide con ningún recuadro, el generador avisa.
 
 ## Técnicas de la guía `formulario.html`
 
@@ -109,7 +112,15 @@ La Home (`inicio/index.html`) contiene, en este orden:
 
 ## Pendientes
 
-- [ ] Definir cómo se manejarán las imágenes y reemplazar los marcadores `.ph`. Las mascotas son emojis provisionales.
+- [ ] Imágenes que faltan, porque no hay ninguna adecuada en el sitio actual:
+  - las varitas NFC con forma (pierna de pollo, etc.);
+  - la foto central de Talleres, Asistencia y Piscinas;
+  - la cajera confirmando un Yape;
+  - las pantallas del equipo;
+  - la balanza;
+  - los íconos de las estaciones.
+  Las mascotas siguen siendo emojis.
+- [ ] En Fast Food, Cocheras y Canchas la foto central de la rueda es el ícono del rubro, porque no hay foto real.
 - [ ] Definir la ruta real de Fast Food, Asistencia (¿`/ecosistema/apistaff`?) y Piscinas.
 - [ ] Revisar los textos que se redactaron porque el Figma no se pudo capturar completo:
   - el subtítulo del hero de Restaurantes;

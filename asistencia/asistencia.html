@@ -45,6 +45,12 @@
 .awx-landing .nav a{flex:1;text-align:center;padding:9px 6px;font-size:13px}}
 .awx-landing .ph{position:relative;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;border-radius:18px;background:repeating-linear-gradient(135deg,#eef7ea 0 14px,#e2f1dc 14px 28px);color:var(--mut);font-size:13px;font-weight:600;min-height:160px;overflow:hidden}
 .awx-landing .ph span{background:rgba(255,255,255,.85);padding:6px 12px;border-radius:999px}
+.awx-landing .ph.img{padding:0;background:#fff;overflow:hidden}
+.awx-landing .ph.img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.awx-landing .ph.img.contain{background:var(--g4)}
+.awx-landing .ph.img.contain img{object-fit:contain;padding:14%}
+.awx-landing .lb .ph.img img{object-fit:contain;background:#fff}
+.awx-landing .wheel-center .ph.img.contain img{padding:16% 22% 36%}
 .awx-landing .card{background:#fff;border-radius:var(--r);padding:28px;box-shadow:0 1px 0 var(--line)}
 .awx-landing .chip{display:inline-block;background:#ecfbe3;border-radius:999px;padding:6px 14px;font-size:13px;font-weight:600}
 .awx-landing .grid{display:grid;gap:20px}
@@ -333,7 +339,7 @@
 <article class="piece"><div class="piece-top"><span>01 / VARITA MÁGICA NFC</span><button class="btn btn-w btn-sm" data-piece="0">Ampliar ↗</button></div>
 <div class="ph" role="img" aria-label="Varita NFC con la mascota de Asistencia"><span>Varita NFC con la mascota de Asistencia</span></div><h3>Varita Mágica NFC — ¡Cada compra suma!</h3><p>Permite acumular puntos o estampillas en segundos. El vendedor acerca la varita al celular del cliente para registrar sus recompensas y motivarlo a regresar.</p><p>Cómo usarla: Acerca la varita al celular, abre la experiencia de fidelización y registra los puntos o estampillas correspondientes a su compra.</p><p class="small">Uso comercial para la empresa cliente; no constituye una prestación laboral.</p></article>
 <article class="piece"><div class="piece-top"><span>02 / CLUB DE FIDELIDAD NFC</span><button class="btn btn-w btn-sm" data-piece="1">Ampliar ↗</button></div>
-<div class="ph" role="img" aria-label="Letrero NFC «Club de Fidelidad» sobre el mostrador"><span>Letrero NFC «Club de Fidelidad» sobre el mostrador</span></div><h3>NFC Club de Fidelidad — ¡Convierte visitantes en clientes frecuentes!</h3><p>Permite que tus clientes se unan fácilmente a tu club de fidelidad, descubran sus premios y regresen por más beneficios.</p><p>Cómo usarlo: el cliente acerca su celular al letrero NFC, se registra en el club y accede a su tarjeta digital para consultar sus puntos, estampillas y recompensas.</p></article>
+<div class="ph img cover"><img src="https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/6b4c90fd-fe61-42a5-88d6-2088c4f805cd.jpg" alt="Letrero NFC «Club de Fidelidad» sobre el mostrador" loading="lazy" decoding="async"></div><h3>NFC Club de Fidelidad — ¡Convierte visitantes en clientes frecuentes!</h3><p>Permite que tus clientes se unan fácilmente a tu club de fidelidad, descubran sus premios y regresen por más beneficios.</p><p>Cómo usarlo: el cliente acerca su celular al letrero NFC, se registra en el club y accede a su tarjeta digital para consultar sus puntos, estampillas y recompensas.</p></article>
 <article class="piece"><div class="piece-top"><span>03 / EMPRESA ALIADA · FIDELIDAD COMERCIAL</span><button class="btn btn-w btn-sm" data-piece="2">Ampliar ↗</button></div>
 <div class="wallet"><div class="wallet-top"><div><b>apiworking</b><small>APILOYALTY</small></div><div style="text-align:right"><small>ESTAMPILLAS</small><small>ASISTENCIA Y PLANILLAS</small></div></div>
 <h4>Empresa Aliada</h4><div class="lbl">COMPLETA 4 MENSUALIDADES</div><div class="stamps"><i>01</i><i>02</i><i>03</i><i>04</i></div>
@@ -468,7 +474,7 @@
 <script>
 
 (function(){
-  var D = {"rubro":"Asistencia y Planillas","nodes":[["Marcaciones","Huella, rostro o fotocheck NFC."],["Tardanzas","Incumplimientos frente al horario configurado."],["Vacaciones","Saldos y solicitudes de vacaciones."],["Planilla","Cálculo de planilla y gratificaciones."],["Boletas","Boletas de pago generadas desde la planilla."],["Reportes","Información lista para auditoría."]],"pieces":[["Varita Mágica NFC — ¡Cada compra suma!","Varita NFC con la mascota de Asistencia"],["NFC Club de Fidelidad","Letrero NFC «Club de Fidelidad» sobre el mostrador"],["Tarjeta Wallet · Empresa Aliada","Tarjeta de fidelidad digital Empresa Aliada (ejemplo)"]],"plans":[{"tier":"PLAN ÚNICO","name":"APISTAFF","desc":"Asistencia, planillas y reportes según el tamaño de tu equipo","price":null,"all":["Marcación biométrica o NFC.","Cálculo de planilla y boletas.","Reportes para auditoría.","Cotización personalizada","Club de Fidelidad digital ApiLoyalty","Facturación electrónica SUNAT","Soporte y capacitación inicial","Reportes de ventas y caja","Acceso web desde cualquier equipo","Actualizaciones incluidas"]}]};
+  var D = {"rubro":"Asistencia y Planillas","nodes":[["Marcaciones","Huella, rostro o fotocheck NFC."],["Tardanzas","Incumplimientos frente al horario configurado."],["Vacaciones","Saldos y solicitudes de vacaciones."],["Planilla","Cálculo de planilla y gratificaciones."],["Boletas","Boletas de pago generadas desde la planilla."],["Reportes","Información lista para auditoría."]],"pieces":[["Varita Mágica NFC — ¡Cada compra suma!","Varita NFC con la mascota de Asistencia",""],["NFC Club de Fidelidad","Letrero NFC «Club de Fidelidad» sobre el mostrador","https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/6b4c90fd-fe61-42a5-88d6-2088c4f805cd.jpg"],["Tarjeta Wallet · Empresa Aliada","Tarjeta de fidelidad digital Empresa Aliada (ejemplo)"]],"plans":[{"tier":"PLAN ÚNICO","name":"APISTAFF","desc":"Asistencia, planillas y reportes según el tamaño de tu equipo","price":null,"all":["Marcación biométrica o NFC.","Cálculo de planilla y boletas.","Reportes para auditoría.","Cotización personalizada","Club de Fidelidad digital ApiLoyalty","Facturación electrónica SUNAT","Soporte y capacitación inicial","Reportes de ventas y caja","Acceso web desde cualquier equipo","Actualizaciones incluidas"]}]};
   var root = document.querySelector('.awx-landing');
   if(!root) return;
   var $ = function(s,c){return (c||root).querySelector(s)};
@@ -632,7 +638,7 @@
 
   // Lightbox del pack
   var lb = $('#lightbox'), li = 0;
-  function lbShow(i){ var p = D.pieces||[]; if(!p.length) return; li=(i+p.length)%p.length; $('#lb-t').textContent=p[li][0]; $('#lb-img span').textContent=p[li][1]; $('#lb-n').textContent='Pieza '+(li+1)+' de '+p.length; }
+  function lbShow(i){ var p = D.pieces||[]; if(!p.length) return; li=(i+p.length)%p.length; $('#lb-t').textContent=p[li][0]; var box=$('#lb-img'); box.innerHTML=''; if(p[li][2]){ var im=document.createElement('img'); im.src=p[li][2]; im.alt=p[li][1]; box.appendChild(im); box.classList.add('img','cover'); } else { var sp=document.createElement('span'); sp.textContent=p[li][1]; box.appendChild(sp); box.classList.remove('img','cover'); } $('#lb-n').textContent='Pieza '+(li+1)+' de '+p.length; }
   $$('[data-piece]').forEach(function(b){ b.addEventListener('click',function(){ lbShow(+b.getAttribute('data-piece')); open(lb); }); });
   $$('[data-lb]').forEach(function(b){ b.addEventListener('click',function(){ lbShow(li + (+b.getAttribute('data-lb'))); }); });
 

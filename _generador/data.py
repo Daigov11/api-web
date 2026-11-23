@@ -709,3 +709,52 @@ R["canchas"] = dict(
     qubit_cards=[("Reservas y cobros", "Registra la reserva y cobra el adelanto desde el equipo.")],
     plans=PLANS_RETAIL,
 )
+
+# ---------------- Imágenes reutilizadas del sitio actual (apiworking.com.pe) ----------------
+# Catálogo completo con descripciones en IMAGENES.md. Aquí solo las que ya se usan.
+S3 = "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/"
+AW = "https://apiworking.com.pe/assets/public/img/content/"
+IMG = {
+    "mesera_terminal":  S3 + "ebfaff51-1600-4984-957e-03509bb4566f.png",   # 37 mesera con terminal Android
+    "mozo_mesa":        AW + "0872fc3b-d758-4057-bd3e-9875fe710440.png",   # 50 mozo sirviendo en restaurante
+    "cajera_tienda":    AW + "4848c00b-ef8a-4fe5-bf29-3f86322926b4.png",   # 51 cajera en tienda
+    "almacen":          AW + "72701274-badf-4f02-b213-4d41a6d5da22.png",   # 52 comercio / almacén
+    "recepcion_hotel":  AW + "check-in-check-out-gestion-hotel-huspedes.png",  # 72 check-in hotel
+    "ferretero_pos":    AW + "pos-punto-de-venta-tactil-control-cajas.jpg",    # 81 ferretería con POS
+    "ojo_aguila":       AW + "ojo-de-aguila-restohotel-llamar-mozo-pago-yape.jpg",  # 74 QR en mesa
+    "display_club":     S3 + "6b4c90fd-fe61-42a5-88d6-2088c4f805cd.jpg",   # 22 display Club de Fidelidad
+    "resenas_google":   S3 + "6d642a69-63b3-454c-a467-e44ab5cf2d97.jpg",   # 23 reseñas Google Maps
+    "llamador_nfc":     S3 + "81ae9011-78fc-4446-939a-1d50bdc6317d.jpg",   # 24 llamador NFC/QR de meseros
+    "terminal_tarjeta": S3 + "2f63d27d-9092-467b-80cb-df458926fb8c.jpg",   # 26 terminal Android pago con tarjeta
+    "ico_fastfood":     S3 + "cc872b17-cf0a-422d-9252-9e14bda8f36e.png",   # 2 ícono fast food
+    "ico_canchas":      S3 + "16c38f67-fe25-45e4-a37f-0a5f12243118.png",   # 9 ícono cancha
+    "ico_cocheras":     S3 + "b0cb71ad-5d81-4593-a47b-3e8ba323a86a.png",   # 13 ícono cochera
+}
+
+# Recuadro (texto del marcador) -> (imagen, ajuste). "cover" = foto que llena; "contain" = ícono centrado.
+PH_IMG = {
+    # Inicio
+    "Foto: mozo atendiendo una mesa": ("mozo_mesa", "cover"),
+    "Foto: cajera en tienda": ("cajera_tienda", "cover"),
+    "Foto: recepción de hotel": ("recepcion_hotel", "cover"),
+    "Foto: Restaurantes": ("mesera_terminal", "cover"),
+    "Varitas NFC": ("llamador_nfc", "cover"),
+    "Display Club de Fidelidad": ("display_club", "cover"),
+    "01 · Varita NFC": ("llamador_nfc", "cover"),
+    "02 · Display del sistema": ("display_club", "cover"),
+    # Rubros (comunes)
+    "Letrero NFC «Club de Fidelidad» sobre el mostrador": ("display_club", "cover"),
+    "Equipo Android Qubit con pago con tarjeta": ("terminal_tarjeta", "cover"),
+    "Punto QR/NFC Ojo de Águila en la mesa": ("ojo_aguila", "cover"),
+    "Punto QR/NFC Ojo de Águila en la habitación": ("ojo_aguila", "cover"),
+    "ApiReview en la entrega del vehículo": ("resenas_google", "cover"),
+    # Foto central de la rueda del hero
+    "Foto del rubro: Restaurantes": ("mesera_terminal", "cover"),
+    "Foto del rubro: Fast Food": ("ico_fastfood", "contain"),
+    "Foto del rubro: Tiendas": ("cajera_tienda", "cover"),
+    "Foto del rubro: Hoteles": ("recepcion_hotel", "cover"),
+    "Foto del rubro: Ferreterías": ("ferretero_pos", "cover"),
+    "Foto del rubro: Minimarkets": ("almacen", "cover"),
+    "Foto del rubro: Cocheras": ("ico_cocheras", "contain"),
+    "Foto del rubro: Canchas Deportivas": ("ico_canchas", "contain"),
+}
