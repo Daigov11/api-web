@@ -31,6 +31,11 @@ TEXT_FIX = {
 AUTO_BUTTONS = {"Control de movimiento de cabecera", "Ver crecer", "Ver entrada escalonada", "Ver giro"}
 
 
+# Botones y etiquetas de movimiento: se ocultan (pedido del usuario, 2026-11-23)
+MOTION_BUTTONS = {"Sin movimiento", "Activar movimiento", "Reproducir"}
+MOTION_LABELS = {"VISTA SIN MOVIMIENTO", "ENTRADA ESCALONADA · MOVIMIENTO BREVE"}
+
+
 def n_is_button(node):
     """Solo los botones visibles de movimiento alternan la animación (no los temporizadores ni variantes)."""
     return node["name"] in ("Sin movimiento", "Cambiar movimiento") or "movimiento" in node["name"].lower()
@@ -193,6 +198,14 @@ class Page:
                     self.auto[s0["id"]] = {"seq": seq, "ms": [700, 700, 800, 2600]}
                 if s0 and s0["type"] == "COMPONENT_SET" and s0["name"].startswith("Explorador"):
                     conv.hooks.setdefault(n["id"], {})["data-enter"] = "1"
+            if n["type"] == "TEXT" and n.get("characters", "").strip() in MOTION_BUTTONS:
+                par = self.idx.get(self.parent.get(n["id"], ""), {})
+                target = par["id"] if par.get("type") in ("FRAME", "INSTANCE") and par["absoluteBoundingBox"]["width"] < 400 else n["id"]
+                conv.hooks.setdefault(target, {})["data-hide"] = "1"
+            if n["type"] == "TEXT" and n.get("characters", "").strip() in MOTION_LABELS:
+                conv.hooks.setdefault(n["id"], {})["data-hide"] = "1"
+            if n["type"] in ("FRAME", "INSTANCE") and n["name"] in ("Sin movimiento", "Cambiar movimiento", "Reproducir", "Activar movimiento"):
+                conv.hooks.setdefault(n["id"], {})["data-hide"] = "1"
             if n["type"] == "TEXT" and n.get("characters") in TEXT_FIX:
                 n["characters"] = TEXT_FIX[n["characters"]]
                 n["characterStyleOverrides"] = []

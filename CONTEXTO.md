@@ -102,6 +102,7 @@ python3 _generador/figma/build_all.py resto      # solo una (claves: inicio, res
 | Capa superpuesta / cambiar capa / cerrar / atrás | Capas con fondo oscurecido. Se cierran con Escape o con clic fuera. |
 | Cambiar a (variantes) | Cambia la instancia por la variante, con entrada escalonada. |
 | Rueda de 25 variantes y espigas | Animación CSS continua. En la rueda y en las enredaderas del ecosistema, el anillo exterior gira en sentido horario y el interior al revés. |
+| Botones "Sin movimiento" / "Activar movimiento" y etiquetas "VISTA SIN MOVIMIENTO" | **Ocultos** (pedido del usuario, 2026-11-23). Las animaciones siempre corren; solo se detienen si el sistema tiene activada la opción de reducir movimiento. |
 | Tarjetas del explorador | Entran escalonadas al aparecer la sección y al cambiar de pestaña, y se elevan al pasar el mouse. |
 | "Ver giro", "Ver crecer", "Ver entrada escalonada" | **Automáticos** (pedido del usuario, 2026-11-23). La rueda gira siempre, la planta crece en bucle (Semilla → Brote → Creciendo → Plena) y el explorador hace su entrada al aparecer en pantalla. Los botones se ocultan, pero conservan su espacio. |
 | "Sin movimiento" / "Cambiar movimiento" | Activa o desactiva todas las animaciones. |
