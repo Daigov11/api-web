@@ -14,6 +14,8 @@ Fecha de este contexto: 2026-11-23.
 4. **Imágenes:** se reutilizan por URL las que ya están subidas en el sitio actual (S3 `prod-cdb-backend-files` y `apiworking.com.pe/assets/...`). No se copia ningún archivo al proyecto.
    - El catálogo completo, con 119 imágenes, está en `IMAGENES.md`.
    - Cada recuadro sin imagen sigue siendo un marcador CSS con una etiqueta que dice qué foto va ahí.
+   - **Imágenes nuevas:** se suben con la API `POST https://api-centralizador.apiworking.pe/api/Data/images` (multipart, campo `image`), que devuelve la URL de S3. Los originales se guardan en `<módulo>/img/`, que no se sube a git, y la URL se anota en `IMG` y en `IMAGENES.md`.
+   - **Imágenes por página:** `PH_IMG_PAGE` define las imágenes de una página concreta; `STATION_ICONS`, los íconos de "Así funciona"; `WALLET_IMG`, la tarjeta wallet como imagen; y `DELIVERY_LOGOS`, los logos de Rappi y PedidosYa.
    - Para asignar una imagen: en `_generador/data.py`, añade la URL a `IMG` y relaciona el texto del recuadro con ella en `PH_IMG`. Si un texto de `PH_IMG` no coincide con ningún recuadro, el generador avisa.
 
 ## Técnicas de la guía `formulario.html`
@@ -120,6 +122,8 @@ La Home (`inicio/index.html`) contiene, en este orden:
   - la balanza;
   - los íconos de las estaciones.
   Las mascotas siguen siendo emojis.
+- [ ] Comprimir las imágenes subidas que pesan más de 1 MB.
+- [ ] Restaurantes ya tiene sus propias imágenes. Las demás páginas de rubro siguen con las del sitio actual o con marcadores.
 - [ ] En Fast Food, Cocheras y Canchas la foto central de la rueda es el ícono del rubro, porque no hay foto real.
 - [ ] Definir la ruta real de Fast Food, Asistencia (¿`/ecosistema/apistaff`?) y Piscinas.
 - [ ] Revisar los textos que se redactaron porque el Figma no se pudo capturar completo:

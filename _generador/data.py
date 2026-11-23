@@ -158,10 +158,10 @@ R["resto"] = dict(
     validate=("POR VALIDAR", "Confirmar disponibilidad y configuración por plan de integraciones de delivery."),
     eagle=True,
     map_title="De la mesa a cocina. Y de vuelta al cliente.",
-    stations=[("Atención por QR", "El cliente ve la carta o llama al mozo desde la mesa."),
-              ("Toma de pedido", "El mozo registra el pedido en el equipo."),
-              ("Comanda a cocina", "El pedido llega a cada área de producción."),
-              ("Producción", "Cocina prepara cada plato. KDS por estación."),
+    stations=[("Atención por QR/NFC", "El cliente ve la carta o llama al mozo desde la mesa."),
+              ("Alerta al mesero", "El mozo recibe el llamado de la mesa al instante."),
+              ("Toma del pedido", "El mozo registra el pedido en el equipo."),
+              ("Cocina y bar", "La comanda llega a cocina y bar. KDS por estación."),
               ("Nueva solicitud", "El cliente vuelve a llamar al mesero por QR o NFC."),
               ("Más productos", "El mozo agrega un nuevo pedido a la mesa."),
               ("Pedir la cuenta", "El cliente solicita la cuenta por QR o NFC."),
@@ -738,10 +738,6 @@ PH_IMG = {
     "Foto: cajera en tienda": ("cajera_tienda", "cover"),
     "Foto: recepción de hotel": ("recepcion_hotel", "cover"),
     "Foto: Restaurantes": ("mesera_terminal", "cover"),
-    "Varitas NFC": ("llamador_nfc", "cover"),
-    "Display Club de Fidelidad": ("display_club", "cover"),
-    "01 · Varita NFC": ("llamador_nfc", "cover"),
-    "02 · Display del sistema": ("display_club", "cover"),
     # Rubros (comunes)
     "Letrero NFC «Club de Fidelidad» sobre el mostrador": ("display_club", "cover"),
     "Equipo Android Qubit con pago con tarjeta": ("terminal_tarjeta", "cover"),
@@ -758,3 +754,62 @@ PH_IMG = {
     "Foto del rubro: Cocheras": ("ico_cocheras", "contain"),
     "Foto del rubro: Canchas Deportivas": ("ico_canchas", "contain"),
 }
+
+# ---------------- Imágenes propias subidas con la API api/Data/images (2026-11-23) ----------------
+# Origen local: inicio/img y resto/img (no se suben a git). Ver IMAGENES.md.
+IMG.update({
+    "in_varitas": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/c2b987cd-cc74-4171-9ada-2836b23f2884.png",  # Inicio: varitas NFC Don del Mar
+    "in_display_club": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/29fcff42-1bac-4243-94e8-669b19dc84d9.png",  # Inicio: display verde Club de Fidelidad
+    "in_wallet": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/2b6d29d5-5edc-43e7-9ea5-dd059672f95d.png",  # Inicio: tarjeta wallet Club Mesa Feliz
+    "st01": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/ee226e3e-c722-4d65-bfa0-24a9a1bf5eeb.png",  # Ícono 01 Atención QR/NFC
+    "st02": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/f5a93b38-1387-4ccd-8ee3-b10ccac2245d.png",  # Ícono 02 Alerta al mesero
+    "st03": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/e186c1de-f436-4f64-b770-85ed1efd9e44.png",  # Ícono 03 Toma del pedido
+    "st04": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/0c8e266c-f221-41b2-9f87-77e2405dad2c.png",  # Ícono 04 Cocina y bar
+    "st05": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/c1a9e6bc-0654-48ab-937e-6cf4dda41a4d.png",  # Ícono 05 Nueva solicitud
+    "st06": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/f6549cbc-2450-42f5-b661-ee5e4968c113.png",  # Ícono 06 Más productos
+    "st07": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/ea7a0c1c-c982-4b0f-bb1d-1311f3bb0460.png",  # Ícono 07 Pedir la cuenta
+    "st08": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/ffa32a9c-a093-44bc-8f63-ed91e9f96653.png",  # Ícono 08 Pago (4 medios)
+    "st08a": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/1fae5167-5005-4c82-9137-e97fa261d324.png",  # Ícono 08a Pago QR
+    "st08b": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/f41bc607-1746-491c-83b3-c273bd404832.png",  # Ícono 08b Efectivo
+    "st08c": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/be87322b-9f73-4c51-bf77-dbf938817b76.png",  # Ícono 08c Contactless
+    "st08d": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/d54a9f17-8d77-4257-903b-dd0694e6ed86.png",  # Ícono 08d Pago link
+    "st09": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/7e773a5c-135b-4912-af79-859a44204931.png",  # Ícono 09 Comprobante
+    "st10": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/bcbefd5b-f43c-415d-8156-92cd84e1911d.png",  # Ícono 10a Cliente feliz
+    "varita_donmar": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/2b281f0e-f78c-49c1-9c57-1389ad3d44b0.png",  # Varita mágica NFC Don del Mar (pequeña)
+    "letrero_club_mini": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/e40ba631-77ef-4d29-bc3e-aa6fb47a01ed.png",  # Letrero Club de Fidelidad (pequeño)
+    "club_texto": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/b660a09d-1dc5-4fdb-835f-726f2ecfd8da.png",  # Texto CLUB
+    "varita_fritos": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/86d7acea-b22b-4052-813b-036a1a35ebd9.png",  # Varita NFC Fritos Chicken (pierna de pollo)
+    "logo_rappi": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/81b56c92-da46-4ea5-a800-5e400f1cf34c.png",  # Logo Rappi
+    "logo_pedidosya": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/c7ee680b-4b4e-4d9c-8431-8ad3d84b6022.png",  # Logo PedidosYa
+    "eq_comandas": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/93dff260-edae-4516-8cae-caa90ddaf730.png",  # Pantallas: comandas y precuentas
+    "eq_reportes": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/4981b3cc-b00c-4c5c-9a0b-a9da02bf3087.png",  # Pantallas: reportes impresos
+    "eq_facturas": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/9a80b766-c043-48b5-a44e-548fb0a8c33e.png",  # Pantallas: facturas y boletas
+    "resto_wallet": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/ba914aab-49df-41c1-977e-4f0f51d8fb3c.png",  # Tarjeta wallet Sabores que Premian
+    "yape_multi": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/762c1703-57c6-4112-8a67-8fb6b6893aaa.png",  # Yape en múltiples dispositivos
+    "yape_cajera": "https://prod-cdb-backend-files.s3.amazonaws.com/imagenes/5771862c-4ad4-4965-808a-8a0cb58b0b56.png",  # Cajera confirmando Yape
+})
+
+# Recuadros específicos de una página (tienen prioridad sobre PH_IMG)
+PH_IMG_PAGE = {
+    "inicio": {
+        "Varitas NFC": ("in_varitas", "contain"),
+        "01 · Varita NFC": ("in_varitas", "contain"),
+        "Display Club de Fidelidad": ("in_display_club", "contain"),
+        "02 · Display del sistema": ("in_display_club", "contain"),
+    },
+    "resto": {
+        "Varita NFC con forma de pierna de pollo": ("varita_fritos", "contain"),
+        "Pantalla del equipo: Comandas y precuentas": ("eq_comandas", "contain"),
+        "Pantalla del equipo: Reportes impresos": ("eq_reportes", "contain"),
+        "Pantalla del equipo: Boletas y facturas": ("eq_facturas", "contain"),
+        "Video: confirmación de Yape en múltiples dispositivos": ("yape_multi", "contain"),
+        "Foto: cajera confirmando un yape": ("yape_cajera", "contain"),
+    },
+}
+# Íconos de "Así funciona" (uno por estación, en orden)
+STATION_ICONS = {"resto": ["st01", "st02", "st03", "st04", "st05", "st06", "st07", "st08", "st09", "st10"]}
+# Tarjeta wallet como imagen (reemplaza la tarjeta hecha en HTML)
+WALLET_IMG = {"resto": "resto_wallet", "inicio": "in_wallet"}
+# Logos de delivery en la tarjeta del hero (rubros con delivery=True)
+DELIVERY_LOGOS = [("logo_rappi", "Rappi"), ("logo_pedidosya", "PedidosYa")]
+

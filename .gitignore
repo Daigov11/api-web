@@ -1,3 +1,6 @@
 .DS_Store
 __pycache__/
 *.pyc
+
+# Originales de imágenes (ya subidas al S3 con api/Data/images; ver IMAGENES.md)
+*/img/

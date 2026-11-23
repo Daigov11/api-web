@@ -54,6 +54,13 @@ h3{font-size:22px;line-height:1.25;font-weight:700}
 .ph.img.contain img{object-fit:contain;padding:14%}
 .lb .ph.img img{object-fit:contain;background:#fff}
 .wheel-center .ph.img.contain img{padding:16% 22% 36%}
+.st .ph.img.contain{background:#fff}
+.st .ph.img.contain img{padding:4px}
+.eq-card .ph.img{aspect-ratio:4/3;min-height:0}
+.eq-card .ph.img.contain img{padding:0}
+.yape-media .ph.img.contain img{padding:4%}
+.status-logos img{height:30px;width:auto;display:block}
+.wallet-img img{width:100%;height:auto;display:block;max-height:560px;object-fit:contain}
 /* tarjetas */
 .card{background:#fff;border-radius:var(--r);padding:28px;box-shadow:0 1px 0 var(--line)}
 .chip{display:inline-block;background:#ecfbe3;border-radius:999px;padding:6px 14px;font-size:13px;font-weight:600}
@@ -627,15 +634,23 @@ def jlist(items):
     return "[" + ",".join(items) + "]"
 
 USED_PH = set()
+CUR = {"page": None}
+
+def _ph_lookup(label):
+    m = PH_IMG_PAGE.get(CUR["page"], {}).get(label)
+    if m:
+        USED_PH.add((CUR["page"], label)); return m
+    m = PH_IMG.get(label)
+    if m: USED_PH.add(label)
+    return m
 
 def ph_url(label):
-    m = PH_IMG.get(label)
+    m = _ph_lookup(label)
     return IMG[m[0]] if m else ""
 
-def ph(label, cls=""):
-    m = PH_IMG.get(label)
+def ph(label, cls="", key=None, fit="contain"):
+    m = (key, fit) if key else _ph_lookup(label)
     if m:
-        USED_PH.add(label)
         key, fit = m
         return f'<div class="ph img {fit} {cls}"><img src="{IMG[key]}" alt="{esc(label)}" loading="lazy" decoding="async"></div>'
     return f'<div class="ph {cls}" role="img" aria-label="{esc(label)}"><span>{esc(label)}</span></div>'
@@ -735,6 +750,7 @@ def overlays(rubro_name, rubro_key=None, plans=None):
 
 # ---------------- página de rubro ----------------
 def rubro_page(k):
+    CUR["page"] = k
     d = R[k]; name = NAMES[k]; m = MASCOT[k]
     no_pay = d.get("no_payments")
     # hero wheel
@@ -745,7 +761,9 @@ def rubro_page(k):
         wn += f'<span class="wn" style="left:{x:.1f}%;top:{y:.1f}%">{esc(w)}</span>'
     hc_t, hc_s = d["hero_card"]
     steps = "".join(f'<div class="{"on" if i==1 else ""}"><small>0{i+1}</small>{esc(s)}</div>' for i, s in enumerate(hc_s))
-    logos = '<div class="status-logos" aria-label="Integraciones de delivery por confirmar"><span>Rappi</span><span>PedidosYa</span></div>' if d.get("delivery") else ""
+    logos = ('<div class="status-logos" aria-label="Integraciones de delivery por confirmar">'
+             + "".join(f'<img src="{IMG[key]}" alt="{esc(nm)}" loading="lazy" decoding="async">' for key, nm in DELIVERY_LOGOS)
+             + '</div>') if d.get("delivery") else ""
     hero = f'''<section class="hero" id="top"><div class="wrap hero-grid">
 <div>
 <div class="eyebrow">SOLUCIONES / {esc(name.upper())}</div>
@@ -795,6 +813,13 @@ def rubro_page(k):
         vl, vt = d["validate"]
         validate = f'<div class="validate"><b>{esc(vl)}:</b> {esc(vt)}</div>'
     connect = "".join(f'<li><i aria-hidden="true">{i+1}</i>{esc(c)}</li>' for i, c in enumerate(d["connect"]))
+    if WALLET_IMG.get(k):
+        wallet_html = f'<div class="wallet-img"><img src="{IMG[WALLET_IMG[k]]}" alt="Tarjeta de fidelidad digital {esc(w["name"])} (ejemplo)" loading="lazy" decoding="async"></div>'
+    else:
+        wallet_html = f'''<div class="wallet"><div class="wallet-top"><div><b>apiworking</b><small>APILOYALTY</small></div><div style="text-align:right"><small>ESTAMPILLAS</small><small>{esc(w["label"])}</small></div></div>
+<h4>{esc(w["name"])}</h4><div class="lbl">{esc(w["goal"])}</div><div class="stamps">{stamps}</div>
+<div class="lbl">TU RECOMPENSA</div><p style="margin-top:4px">{esc(w["reward"])}</p>
+<div class="qr" aria-hidden="true"></div><div class="qr-n">QR DE EJEMPLO · NO CANJEABLE</div></div>'''
     pack = f'''<section class="pack" id="pack"><div class="wrap">
 <div class="eyebrow">EL PACK QUE HACE QUE VUELVAN · TOCA UNA PIEZA PARA AMPLIAR</div>
 <h2>Tres piezas.<br>Una experiencia para volver.</h2>
@@ -804,10 +829,7 @@ def rubro_page(k):
 <article class="piece"><div class="piece-top"><span>02 / CLUB DE FIDELIDAD NFC</span><button class="btn btn-w btn-sm" data-piece="1">Ampliar ↗</button></div>
 {ph("Letrero NFC «Club de Fidelidad» sobre el mostrador")}<h3>NFC Club de Fidelidad — ¡Convierte visitantes en clientes frecuentes!</h3><p>Permite que tus clientes se unan fácilmente a tu club de fidelidad, descubran sus premios y regresen por más beneficios.</p><p>Cómo usarlo: el cliente acerca su celular al letrero NFC, se registra en el club y accede a su tarjeta digital para consultar sus puntos, estampillas y recompensas.</p></article>
 <article class="piece"><div class="piece-top"><span>{esc(pack_label)}</span><button class="btn btn-w btn-sm" data-piece="2">Ampliar ↗</button></div>
-<div class="wallet"><div class="wallet-top"><div><b>apiworking</b><small>APILOYALTY</small></div><div style="text-align:right"><small>ESTAMPILLAS</small><small>{esc(w["label"])}</small></div></div>
-<h4>{esc(w["name"])}</h4><div class="lbl">{esc(w["goal"])}</div><div class="stamps">{stamps}</div>
-<div class="lbl">TU RECOMPENSA</div><p style="margin-top:4px">{esc(w["reward"])}</p>
-<div class="qr" aria-hidden="true"></div><div class="qr-n">QR DE EJEMPLO · NO CANJEABLE</div></div>
+{wallet_html}
 <div class="sell"><span aria-hidden="true" style="font-size:26px">🏅</span><div><b>PARA VENDER MÁS</b>{esc(w["sell"])}</div></div>
 <button class="btn btn-dk btn-block" data-piece="2">Ver tarjeta ampliada ↗</button>
 <p class="small">Diseño de ejemplo. No añade ni descarga todavía un pase de Apple Wallet.</p></article>
@@ -825,7 +847,7 @@ def rubro_page(k):
     pieces_js = jlist([
         "[" + jstr(wand_t) + "," + jstr(wand_img) + "," + jstr(ph_url(wand_img)) + "]",
         "[" + jstr("NFC Club de Fidelidad") + "," + jstr("Letrero NFC «Club de Fidelidad» sobre el mostrador") + "," + jstr(ph_url("Letrero NFC «Club de Fidelidad» sobre el mostrador")) + "]",
-        "[" + jstr("Tarjeta Wallet · " + w["name"]) + "," + jstr("Tarjeta de fidelidad digital " + w["name"] + " (ejemplo)") + "]",
+        "[" + jstr("Tarjeta Wallet · " + w["name"]) + "," + jstr("Tarjeta de fidelidad digital " + w["name"] + " (ejemplo)") + "," + jstr(IMG[WALLET_IMG[k]] if WALLET_IMG.get(k) else "") + "]",
     ])
 
     # secciones especiales
@@ -861,7 +883,8 @@ def rubro_page(k):
 </div><p class="small" style="margin-top:14px;color:var(--dk)">Equipos, compatibilidad y alcance se confirman en la demostración.</p></div></section>'''
 
     # así funciona
-    sts = "".join(f'<div class="st"><b class="n">{i+1:02d}</b>{ph("Ícono")}<div><h4>{esc(t)}</h4><p>{esc(s)}</p></div></div>' for i, (t, s) in enumerate(d["stations"]))
+    icons = STATION_ICONS.get(k, [])
+    sts = "".join(f'<div class="st"><b class="n">{i+1:02d}</b>{ph("Ícono " + t, key=(icons[i] if i < len(icons) else None))}<div><h4>{esc(t)}</h4><p>{esc(s)}</p></div></div>' for i, (t, s) in enumerate(d["stations"]))
     stg = "".join(f"<li>{esc(s)}</li>" for s in d["stages"])
     mapa = f'''<section class="map" id="como-funciona"><div class="wrap">
 <div class="eyebrow">ASÍ FUNCIONA / {esc(name.upper())}</div><h2 class="hd">{esc(d["map_title"])}</h2>
@@ -993,6 +1016,7 @@ def rubro_page(k):
 
 # ---------------- inicio ----------------
 def inicio_page():
+    CUR["page"] = "inicio"
     cards = ""
     for i, k in enumerate(ORDER):
         grp = next(g for g, ks in GROUPS if k in ks)
@@ -1074,9 +1098,7 @@ def inicio_page():
 <ol class="loy-steps"><li><span>01</span><div><b>Acerca</b>Un punto de contacto NFC.</div></li><li><span>02</span><div><b>Conecta</b>Tu negocio y tu club digital.</div></li><li><span>03</span><div><b>Invita a volver</b>Una recompensa por descubrir.</div></li></ol>
 <a class="btn btn-y" style="background:#d9f590" href="#rubros">Ver opciones para mi negocio ↗</a></div>
 <div><p class="eyebrow">UN GESTO REAL. UNA RELACIÓN DIGITAL.</p><div class="pieces2">{ph("01 · Varita NFC")}{ph("02 · Display del sistema")}</div>
-<div class="wallet" style="background:#ffd6cf;color:var(--dk);margin-top:14px"><div class="wallet-top"><div><small>APIWORKING / WALLET DIGITAL</small></div></div><h4 class="hd">Club Mesa Feliz</h4><p>Cada visita tiene su lugar.</p><p><b>2 / 8 sellos · ejemplo</b></p>
-<div class="qr" aria-hidden="true"></div><div class="qr-n">Ejemplo: Restaurantes</div>
-<div class="stamps" style="justify-content:center">{"".join('<i style="border-color:#c4554f;background:' + ("#fff" if j<2 else "rgba(255,255,255,.4)") + '">🛎️</i>' for j in range(8))}</div></div></div>
+<div class="wallet-img" style="margin-top:14px"><img src="{IMG[WALLET_IMG["inicio"]]}" alt="Tarjeta wallet de ejemplo: Club Mesa Feliz" loading="lazy" decoding="async"></div></div>
 </div></section>
 <section class="faq" id="preguntas"><div class="wrap" style="max-width:860px">
 <div class="eyebrow">PREGUNTAS FRECUENTES</div><h2 class="hd">Lo esencial, sin rodeos.</h2>
@@ -1093,7 +1115,7 @@ files = {"inicio/index.html": inicio_page()}
 for k in ORDER:
     folder = k
     files[f"{folder}/{folder}.html"] = rubro_page(k)
-unused = set(PH_IMG) - USED_PH
+unused = (set(PH_IMG) | {(pg, l) for pg, m in PH_IMG_PAGE.items() for l in m}) - USED_PH
 if unused: print("AVISO: imágenes sin recuadro:", sorted(unused))
 for path, content in files.items():
     full = os.path.join(OUT, path)
