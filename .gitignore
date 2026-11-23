@@ -4,3 +4,7 @@ __pycache__/
 
 # Originales de imágenes (ya subidas al S3 con api/Data/images; ver IMAGENES.md)
 */img/
+
+# Caché local del Figma (archivo completo ~186 MB, SVG, temporales)
+_generador/figma/cache/
+__pycache__/

@@ -1,159 +1,139 @@
 # Web Apiworking — contexto del proyecto
 
-Versión en código del prototipo de Figma **"WEB APIWORKING"**: la Home y 11 páginas, una por rubro.
-Fecha de este contexto: 2026-11-23.
+Las páginas son una **copia exacta** del prototipo de Figma **"WEB APIWORKING"**: la Home y 11 páginas, una por rubro, cada una con su versión de escritorio y su versión móvil.
+
+- Figma: https://www.figma.com/proto/FOlwySZnBYyLc0rKWgWWI4/WEB-APIWORKING?node-id=10-14&starting-point-node-id=10%3A14
+- Fecha de este contexto: 2026-11-23.
 
 ## Reglas del proyecto (obligatorias)
 
-1. **Una carpeta por módulo y un único `.html` por carpeta.** El HTML, el CSS (en `<style>`) y el JS (en `<script>`) van escritos dentro del mismo archivo.
-   - **Motivo:** en Apiworking cada página se guarda en una base de datos como un bloque de código HTML. Un archivo equivale a una página completa.
-2. **Ningún archivo usa otros archivos de este proyecto.** No se permite `src`, `href` ni `@import` hacia `../resto/...`, `estilos.css`, `app.js` ni nada parecido.
-   - Las referencias web externas sí están permitidas: CDN, Google Fonts, URLs públicas.
-   - La navegación entre páginas se hace con enlaces absolutos `<a href="https://apiworking.com.pe/ruta/">`, igual que en `formulario.html`.
-3. **Seguir las técnicas de `formulario.html`** (la guía de cómo se arman las páginas para el CMS de Apiworking). Ver la sección siguiente.
-4. **Imágenes:** se reutilizan por URL las que ya están subidas en el sitio actual (S3 `prod-cdb-backend-files` y `apiworking.com.pe/assets/...`). No se copia ningún archivo al proyecto.
-   - El catálogo completo, con 119 imágenes, está en `IMAGENES.md`.
-   - Cada recuadro sin imagen sigue siendo un marcador CSS con una etiqueta que dice qué foto va ahí.
-   - **Imágenes nuevas:** se suben con la API `POST https://api-centralizador.apiworking.pe/api/Data/images` (multipart, campo `image`), que devuelve la URL de S3. Los originales se guardan en `<módulo>/img/`, que no se sube a git, y la URL se anota en `IMG` y en `IMAGENES.md`.
-   - **Imágenes por página:** `PH_IMG_PAGE` define las imágenes de una página concreta; `STATION_ICONS`, los íconos de "Así funciona"; `WALLET_IMG`, la tarjeta wallet como imagen; y `DELIVERY_LOGOS`, los logos de Rappi y PedidosYa.
-   - Para asignar una imagen: en `_generador/data.py`, añade la URL a `IMG` y relaciona el texto del recuadro con ella en `PH_IMG`. Si un texto de `PH_IMG` no coincide con ningún recuadro, el generador avisa.
+1. **Una carpeta por módulo y un único `.html` por carpeta.** El HTML, el CSS y el JS van dentro del mismo archivo.
+   - **Motivo:** en Apiworking cada página se guarda como código HTML en una base de datos.
+2. **Ningún archivo usa otros archivos del proyecto.** Solo se permiten referencias web externas:
+   - Google Fonts;
+   - imágenes en S3;
+   - el endpoint del formulario.
 
-## Técnicas de la guía `formulario.html`
-
-`formulario.html` (en la raíz) es la referencia de cómo se armaban las páginas para que sus estilos se impongan sobre el contenedor HTML del CMS. No es un módulo. Todas las páginas aplican sus técnicas:
-
-1. **Capa propia:** todo el contenido va dentro de `<div class="awx-overlay awx-landing">`. Es una capa fija a pantalla completa (`position:fixed; inset:0; z-index:9999`) que tapa el contenedor del CMS y tiene su propio scroll.
-2. **CSS con prefijo:** cada regla empieza por `.awx-landing`, para ganarle a los estilos del CMS sin afectarlos. El generador añade el prefijo solo (`scope_css`); en `build.py` el CSS se escribe sin prefijo.
-   - `:root` y `body` pasan a `.awx-landing`; `html` pasa a `.awx-overlay`.
-3. **Sin clearfix del CMS:** se anulan los `::before`/`::after` que el CMS pone a contenedores como `.wrap`.
-4. **Sin choques con Bootstrap:** las clases `.modal` y `.lead` se renombran como `.awx-modal` y `.awx-lead`.
-5. **JS encapsulado y en ES5** (`var`, `function`): todo dentro de una función, sin variables globales en `window`, y las búsquedas limitadas a la capa `.awx-landing`. El `<script>` va dentro de la capa, al final.
-6. **Anclas por JS:** los enlaces `#seccion` se resuelven con `scrollIntoView` dentro de la capa, sin cambiar la URL del CMS.
-7. **Sin entidades HTML** (`&nbsp;`, `&amp;`…): se usan los caracteres directos.
-
-## Formulario de contacto (endpoint)
-
-Los formularios de consulta envían los datos al endpoint de Apiworking, igual que `formulario.html`.
-
-- **Endpoint:** `POST https://api-centralizador.apiworking.pe/api/Administrativo/sendFormContact` (JSON). Acepta CORS desde cualquier origen.
-- **Cuerpo:** `nombreCompleto`, `telefono` (solo dígitos, mínimo 7), `nombreNegocio`, `giroNegocio`, `ipCreacion` (obtenida de api.ipify.org) y `destinatarios`.
-- **`giroNegocio`:** el endpoint no tiene campos para plan, locales, especialidad ni necesidad. Por eso se envía el rubro en mayúsculas y, después, esos datos separados por `|`. Ejemplo: `RESTAURANTES | Locales: 1 local | Plan: STANDARD · S/ 949 al año`.
-- **Destinatarios:** son los mismos correos de `formulario.html` y se definen en `FORM_DEST` (`_generador/build.py`).
-- **Dónde está:** en cada página de rubro, en el modal "Agendar demo / Elegir plan" y en la sección "Prepara tu consulta". La Home no tiene formulario.
-- **Comportamiento:**
-  - valida los datos y muestra avisos si falta algo;
-  - mientras envía, el botón dice "Enviando..." y muestra un indicador de carga;
-  - si el envío funciona, limpia el formulario y abre la confirmación "Recibimos tu consulta.";
-  - si falla, muestra "Error al enviar. Intenta nuevamente.".
+   La navegación entre páginas usa URLs absolutas: `https://apiworking.com.pe/<ruta>/`.
+3. **Se siguen las técnicas de `formulario.html`** (ver la sección "Técnicas de la guía").
+4. **Copia exacta del Figma:** el diseño, los textos y el orden no se reinterpretan. Si algo cambia en el Figma, se regenera.
+5. **Imágenes:** se alojan en el S3 de Apiworking y se suben con `POST https://api-centralizador.apiworking.pe/api/Data/images` (multipart, campo `image`, máximo 2 MB). La respuesta trae la `url`.
 
 ## Estructura
 
-| Carpeta | Archivo | Ruta web | Página |
+| Carpeta | Archivo | Ruta web | Frames de Figma (escritorio / móvil) |
 |---|---|---|---|
-| inicio | index.html | `/` | Home |
-| resto | resto.html | `/sistema-para-restaurantes` | Restaurantes |
-| fastfood | fastfood.html | `/fastfood` (provisional) | Fast Food |
-| tiendas | tiendas.html | `/sistema-gestion-y-facturacion-electronica-para-tienda-pymes` | Tiendas |
-| hoteles | hoteles.html | `/sistema-de-gestion-para-hoteles` | Hoteles |
-| ferreterias | ferreterias.html | `/sistema-gestion-y-facturacion-electronica-para-ferreterias` | Ferreterías |
-| minimarkets | minimarkets.html | `/sistema-de-gestion-y-facturacion-para-minimarket` | Minimarkets |
-| talleres | talleres.html | `/sistema-de-gestion-para-talleres-mecanicos` | Talleres |
-| asistencia | asistencia.html | `/asistencia` (provisional) | Asistencia y Planillas |
-| cocheras | cocheras.html | `/sistema-cocheras` | Cocheras |
-| piscinas | piscinas.html | `/piscinas` (provisional) | Piscinas |
-| canchas | canchas.html | `/sistema-canchas-deportivas` | Canchas |
+| inicio | index.html | `/` | 10:2 / 54:2464 |
+| resto | resto.html | `/sistema-para-restaurantes/` | 10:14 / 10:26 |
+| fastfood | fastfood.html | `/fastfood/` (provisional) | 10:38 / 10:50 |
+| tiendas | tiendas.html | `/sistema-gestion-y-facturacion-electronica-para-tienda-pymes/` | 10:62 / 10:74 |
+| hoteles | hoteles.html | `/sistema-de-gestion-para-hoteles/` | 10:86 / 10:98 |
+| ferreterias | ferreterias.html | `/sistema-gestion-y-facturacion-electronica-para-ferreterias/` | 10:110 / 10:122 |
+| minimarkets | minimarkets.html | `/sistema-de-gestion-y-facturacion-para-minimarket/` | 10:134 / 10:146 |
+| talleres | talleres.html | `/sistema-de-gestion-para-talleres-mecanicos/` | 10:158 / 10:170 |
+| asistencia | asistencia.html | `/asistencia/` (provisional) | 10:182 / 10:194 |
+| cocheras | cocheras.html | `/sistema-cocheras/` | 10:206 / 10:218 |
+| piscinas | piscinas.html | `/piscinas/` (provisional) | 10:230 / 10:242 |
+| canchas | canchas.html | `/sistema-canchas-deportivas/` | 10:254 / 10:266 |
 
-- `_generador/`: herramienta de desarrollo. **No es una página** y no se sube a la base de datos.
-- Las rutas son las URLs reales de apiworking; por ejemplo, la página original de Restaurantes es `/sistema-para-restaurantes`. Se definen en `ROUTES` y el dominio en `BASE_URL` (`_generador/data.py`). Los enlaces salen como `https://apiworking.com.pe/<ruta>/`. Fast Food, Asistencia y Piscinas aún no tienen ruta real.
-- Referencias externas: Google Fonts (Inter), el endpoint del formulario y api.ipify.org.
-- Cada página es responsive: un mismo archivo sirve para escritorio y para móvil.
+- Las rutas y el dominio se definen en `ROUTES` y `BASE_URL` (`_generador/data.py`).
+- Cada página pesa entre 0,6 y 0,9 MB. Incluye:
+  - la versión de escritorio y la versión móvil;
+  - todas sus capas superpuestas (demo, consulta preparada, detalle de nodos, modal de función, planes ampliados, vistas NFC);
+  - las variantes del explorador y de la planta.
 
-## Contenido de cada página de rubro
+## Cómo se generan (convertidor Figma → HTML)
 
-1. **Header:** el logo lleva a la Home. Tiene enlaces internos (`#como-funciona`, `#precios`, `#testimonios`) y el botón "Agendar demo", que abre un modal de consulta.
-2. **Hero:** rueda con el botón "Ver giro" y una tarjeta de estado. Rappi y PedidosYa aparecen solo en resto y fastfood.
-3. **Franja de valor.**
-4. **Ecosistema:** 6 nodos y cada uno abre un panel con su propio texto. Incluye la planta "Ver crecer" y el botón "Sin movimiento".
-5. **Pack:** 3 piezas con visor "Ampliar", tarjeta Wallet, Push/GeoPush, el bloque "Así se conecta" y una nota "POR VALIDAR".
-6. **Secciones especiales según el rubro:**
-   - Ojo de Águila: resto y hoteles
-   - Balanza: minimarkets
-   - ApiReview: talleres
-   - ZKTeco: asistencia
-7. **Así funciona** (`#como-funciona`): estaciones y 5 etapas.
-8. **Funciones:** 6 pestañas con 4 tarjetas cada una (24 en total). Cada tarjeta abre un modal de detalle con el aviso "Video demostrativo pendiente de enlace".
-9. **Beneficios, Yape y Qubit.** Asistencia no los muestra (bandera `no_payments`).
-10. **Precios:** 4 planes (Asistencia tiene solo APISTAFF).
-    - "Elegir" abre la consulta con el plan ya cargado.
-    - "VER MÁS +" abre un panel lateral que se cierra con la ×, con Escape o haciendo clic fuera.
-11. **Testimonios:** por ahora es un marcador.
-12. **FAQ, formulario de consulta y footer.**
-    - El FAQ tiene 5 preguntas.
-    - El formulario envía los datos al endpoint de Apiworking (ver la sección del formulario).
+Las páginas **no se editan a mano**: se generan desde el Figma con `_generador/figma/`.
 
-La Home (`inicio/index.html`) contiene, en este orden:
-- el hero con su collage y la tarjeta ApiLoyalty;
-- las cifras 11 / 264;
-- "Cómo funciona";
-- la cuadrícula de los 11 rubros;
-- ApiLoyalty + NFC;
-- el FAQ, el CTA final y el footer.
+```bash
+python3 _generador/figma/build_all.py            # las 12 páginas
+python3 _generador/figma/build_all.py resto      # solo una (claves: inicio, resto, fastfood, ...)
+```
 
-## Correcciones respecto al Figma
+| Archivo | Qué hace |
+|---|---|
+| `figapi.py` | Acceso a la API de Figma y a la de imágenes de Apiworking. Lleva la caché y optimiza imágenes con `sips` (JPG/PNG por debajo de 2 MB). |
+| `fig2html.py` | Convierte nodos a HTML con estilos en línea. El diseño automático de Figma se traduce a flexbox; el resto de nodos se posicionan de forma absoluta. Copia rellenos, bordes, sombras, radios y texto con estilos mixtos. |
+| `svgrender.py` | Dibuja como SVG vectores, íconos, ilustraciones y texto en curva a partir de su geometría exacta. Sustituye al renderizado de Figma, que tiene cupo. |
+| `build_fig.py` | Resuelve los recursos: sube las imágenes a S3 y genera o inserta los SVG. |
+| `pagina.py` | Traduce las interacciones del prototipo y convierte los campos del formulario en inputs reales. Corrige los textos que decían que el formulario no envía datos. |
+| `shell.py` | Envoltorio de la página con las técnicas de la guía, más el motor de interacciones y el formulario. |
+| `assets.json` | Mapa de recursos → URL en S3. Se versiona para no volver a subir lo mismo. |
+| `cache/` | Copia local del archivo de Figma completo, de unos 186 MB. **No va a git.** |
 
-- El panel "Ver más" de los planes ahora tiene botón de cierre.
-- Cada nodo del ecosistema muestra su propio texto.
-- "Cómo funciona" lleva a la sección Así funciona.
-- Erratas corregidas:
-  - "MÚILTIPLES" → "múltiples"
-  - "solicitar sistema…" → "Solicitar sistema…", con mayúscula inicial
-- En los rubros que no son de comida ya no aparece "Comandas y precuentas".
-- La estación 02 de Piscinas ya no repite el texto de Cocheras.
-- Asistencia ya no muestra Yape ni Qubit.
-- El visor "Ampliar" ahora cabe en pantallas bajas.
+**Token de Figma:** está en `~/.figma_token` y es de solo lectura. Nunca va al repositorio.
+
+**Cupo de la API de Figma:** la cuenta es de solo lectura y tiene un cupo muy bajo.
+- El renderizado de imágenes (`/v1/images`) quedó bloqueado unos 4,6 días a partir del 2026-11-23. Por eso existe `svgrender.py`.
+- Para regenerar no hace falta la API, porque se usa la copia en `cache/full_file.json`.
+- Si el Figma cambia, hay que volver a descargar el archivo completo con **una sola** petición:
+  ```bash
+  curl -H "X-Figma-Token: $(cat ~/.figma_token)" \
+    "https://api.figma.com/v1/files/FOlwySZnBYyLc0rKWgWWI4?geometry=paths" \
+    -o _generador/figma/cache/full_file.json
+  ```
+  Después hay que volver a crear los `node_*.json` y el `index.json` del mismo directorio.
+
+`_generador/legacy_build.py` es el generador anterior (hecho a mano, no exacto). **Ya no se usa.** Ejecutarlo sobrescribiría las páginas.
+
+## Técnicas de la guía `formulario.html`
+
+1. **Capa propia:** todo va dentro de `<div class="awx-overlay awx-landing">`, una capa fija a pantalla completa con su propio scroll que tapa el contenedor del CMS.
+2. **Estilos en línea en cada elemento**, más un reinicio con prefijo `.awx-landing`. Así los estilos del CMS no los alteran.
+3. **Sin clearfix ni pseudo-elementos del CMS:** se anulan en los `div`.
+4. **JS en ES5, encapsulado:** sin variables globales y con el `<script>` dentro de la capa.
+5. **Sin entidades HTML.**
+6. **Anclas por JS** (`scrollIntoView`), sin cambiar la URL del CMS.
+
+## Escalado y móvil
+
+- El diseño de escritorio mide 1440 px de ancho y el móvil 390 px. El JS aplica `zoom = ancho / 1440` o `ancho / 390`, así que la página se ve proporcionalmente igual al Figma en cualquier pantalla.
+- Hasta 700 px de ancho se muestra el frame móvil; desde ahí, el de escritorio.
+- Las capas superpuestas se escalan con la misma regla.
+
+## Interacciones (motor en `shell.py`)
+
+| Interacción del prototipo | Comportamiento en la página |
+|---|---|
+| Navegar a otro frame | Enlace a la ruta de esa página. |
+| Desplazarse a | Desplazamiento suave a la sección. |
+| URL | Abre el enlace en una pestaña nueva (por ejemplo, el video de YouTube). |
+| Capa superpuesta / cambiar capa / cerrar / atrás | Capas con fondo oscurecido. Se cierran con Escape o con clic fuera. |
+| Cambiar a (variantes) | Cambia la instancia por la variante, con entrada escalonada. |
+| Rueda de 25 variantes y espigas | Animación CSS continua. |
+| "Sin movimiento" / "Cambiar movimiento" | Activa o desactiva todas las animaciones. |
+| Variables de Figma | La API no da sus valores. El modal de función muestra la función pulsada y el rubro. |
+| Hover del explorador | No se replica: depende de variables que la API no expone. |
+
+## Formulario de contacto
+
+- **Dónde está:** en la sección "Prepara tu consulta" de cada rubro y en la capa "Demo emergente".
+- **Campos:** los frames "Entrada · X" se convierten en inputs reales con el mismo estilo.
+- **Envío:** "Preparar mi consulta" hace un `POST` a `https://api-centralizador.apiworking.pe/api/Administrativo/sendFormContact` con estos datos:
+  - `nombreCompleto`
+  - `telefono`: solo dígitos.
+  - `nombreNegocio`
+  - `giroNegocio`: el rubro, seguido de los datos extra separados por `|`.
+  - `ipCreacion`: obtenida de ipify.
+  - `destinatarios`: los mismos de `formulario.html`.
+- **Después de enviar:** se ejecuta la acción del prototipo. En la demo pasa a "Consulta preparada"; en la página baja a la revisión.
+- **Textos corregidos:** los del diseño que decían "no guarda ni envía datos" se cambiaron por textos correctos (`TEXT_FIX` en `pagina.py`).
 
 ## Pendientes
 
-- [ ] Imágenes que faltan, porque no hay ninguna adecuada en el sitio actual:
-  - las varitas NFC con forma (pierna de pollo, etc.);
-  - la foto central de Talleres, Asistencia y Piscinas;
-  - la cajera confirmando un Yape;
-  - las pantallas del equipo;
-  - la balanza;
-  - los íconos de las estaciones.
-  Las mascotas siguen siendo emojis.
-- [ ] Comprimir las imágenes subidas que pesan más de 1 MB.
-- [ ] Restaurantes ya tiene sus propias imágenes. Las demás páginas de rubro siguen con las del sitio actual o con marcadores.
-- [ ] En Fast Food, Cocheras y Canchas la foto central de la rueda es el ícono del rubro, porque no hay foto real.
-- [ ] Definir la ruta real de Fast Food, Asistencia (¿`/ecosistema/apistaff`?) y Piscinas.
-- [ ] Revisar los textos que se redactaron porque el Figma no se pudo capturar completo:
-  - el subtítulo del hero de Restaurantes;
-  - algunas estaciones;
-  - las funciones de Restaurantes y la pestaña Administración de Fast Food;
-  - varios beneficios;
-  - las recompensas de algunas tarjetas Wallet;
-  - las viñetas de los planes Básico, Completo y Hoteles;
-  - los textos de los nodos.
+- [ ] Rutas reales de Fast Food, Asistencia (¿`/ecosistema/apistaff`?) y Piscinas.
 - [ ] Hacer un envío real de prueba desde el CMS. En local se probó con el endpoint simulado.
-- [ ] Decidir si se usa el logo real que aparece en `formulario.html`. Ahora el logo es texto.
-- [ ] Añadir los enlaces de los videos demostrativos y los testimonios reales.
+- [ ] Revisión visual página por página contra el Figma. Restaurantes escritorio se comparó píxel a píxel; el resto se revisó por muestreo.
+- [ ] El texto en curva de la rueda tiene un espaciado algo distinto al de Figma, porque mi SVG usa la fuente del navegador.
+- [ ] Peso de las páginas, de 0,6 a 0,9 MB. Se puede reducir si la base de datos tiene límite.
 
-## Cómo regenerar las páginas
+## Verificación realizada (2026-11-23)
 
-Las 12 páginas se generan con un script en Python a partir de una plantilla común y de los datos de cada rubro.
-
-```bash
-python3 _generador/build.py .
-```
-
-- `_generador/data.py` contiene los textos, planes, rutas y banderas de cada rubro.
-- `_generador/build.py` contiene la plantilla, el CSS y el JS compartidos, y escribe las 12 páginas.
-- **Atención:** regenerar **sobrescribe** los HTML. Si editaste un HTML a mano, pasa ese cambio al generador antes de volver a ejecutarlo, o lo perderás.
-
-## Verificación realizada
-
-- `node --check` pasa en el JS de las 12 páginas.
-- Una revisión con grep confirma que ningún archivo usa archivos locales del proyecto: los enlaces solo son `#` o `https://`.
-- Se probaron automáticamente con Playwright los modales, el panel de planes, los nodos, el visor, las pestañas y las anclas en los 11 rubros, con Bootstrap 3 cargado encima para simular el CMS. No hubo errores de JS.
-- También se probaron, con el endpoint simulado, la validación, el envío correcto (revisando el JSON enviado), el envío con plan elegido y el error del servidor.
-- En móvil (390 px) ninguna página se desborda a lo ancho dentro de la capa.
+- Restaurantes escritorio: misma altura que el Figma (14 539 px) y comparación sección por sección prácticamente idéntica.
+- Las 12 páginas:
+  - 0 imágenes rotas y 0 errores de JS;
+  - todas las capas de escritorio abren;
+  - el formulario envía el JSON esperado (endpoint simulado);
+  - el móvil se ve sin desbordes.
+- Las referencias son solo Google Fonts, S3 y las APIs; ningún archivo usa otro del proyecto.
