@@ -22,6 +22,9 @@
 .awx-landing [data-ring]{animation:fzSpin 40s linear infinite;transform-origin:50% 50%}
 .awx-landing [data-ring=in]{animation-duration:55s;animation-direction:reverse}
 .awx-landing svg{overflow:visible}
+.awx-landing [data-card]{transition:transform .18s ease-out,box-shadow .18s ease-out}
+.awx-landing [data-card]:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(31,51,40,.14)}
+.awx-landing.fz-still [data-card]{animation:none!important}
 .awx-landing [data-hide]{visibility:hidden!important;pointer-events:none!important}
 .awx-landing.fz-still [data-ring],.awx-landing.fz-still .fz-enter>*{animation:none!important}
 @keyframes fzSpin{to{transform:rotate(360deg)}}
@@ -132,9 +135,16 @@ Un mismo ecosistema.</div><div style="position:absolute;left:24px;top:105px;widt
     KEEP.forEach(function(k){ if(cur.style[k]) nu.style[k] = cur.style[k]; });
     nu.setAttribute('data-set', set);
     if(cur.getAttribute('data-fz') && !nu.getAttribute('data-fz')) nu.setAttribute('data-fz', cur.getAttribute('data-fz'));
-    if(!root.classList.contains('fz-still')) nu.classList.add('fz-enter');
     cur.parentNode.replaceChild(nu, cur);
+    enterCards(nu);
     timers(nu);
+  }
+  function enterCards(scope){
+    if(root.classList.contains('fz-still')) return;
+    $$('[data-card]', scope).forEach(function(c, i){
+      c.style.animation = 'none'; void c.offsetWidth;
+      c.style.animation = 'fzIn .5s ease-out ' + (i * 90) + 'ms both';
+    });
   }
   function timers(scope){
     var list = $$('[data-fz]', scope); if(scope.getAttribute && scope.getAttribute('data-fz')) list.unshift(scope);
@@ -206,11 +216,14 @@ Un mismo ecosistema.</div><div style="position:absolute;left:24px;top:105px;widt
     var io = new IntersectionObserver(function(es){
       es.forEach(function(e){
         if(!e.isIntersecting) return;
-        var el = e.target, inner = el.querySelector('[data-set]') || el;
-        if(!root.classList.contains('fz-still')){ el.classList.remove('fz-enter'); void el.offsetWidth; el.classList.add('fz-enter'); }
+        enterCards(e.target);
       });
     }, {root: root, threshold: 0.25});
     $$('[data-enter]').forEach(function(e){ io.observe(e); });
+    // al cambiar de pestaña la instancia se reemplaza: se vuelve a observar la nueva
+    new MutationObserver(function(){
+      $$('[data-set]').forEach(function(e){ if(e.querySelector('[data-card]')) io.observe(e); });
+    }).observe(root, {childList:true, subtree:true});
   }
 
   // ---- formulario: POST al centralizador de Apiworking ----

@@ -161,8 +161,10 @@ class Page:
             if n["name"] == "Preparar mi consulta" and n["type"] in ("FRAME", "INSTANCE"):
                 h = conv.hooks.setdefault(n["id"], {})
                 h["data-send"] = str(h.pop("data-fz")) if "data-fz" in h else "x"
-            if n["name"].startswith(("Anillo exterior", "Anillo interior")):
+            if n["name"].startswith(("Anillo exterior", "Anillo interior", "Espigas exteriores", "Espigas interiores")):
                 conv.hooks.setdefault(n["id"], {})["data-ring"] = "out" if "exterior" in n["name"] else "in"
+            if n["name"].startswith("Función · ") and n["type"] != "TEXT":
+                conv.hooks.setdefault(n["id"], {})["data-card"] = "1"
             if n["type"] == "TEXT_PATH" and n.get("characters") and not n.get("_ring"):
                 items = []
                 for w in n["characters"].split("•"):
