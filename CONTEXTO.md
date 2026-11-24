@@ -86,6 +86,12 @@ python3 _generador/figma/build_all.py resto      # solo una (claves: inicio, res
 5. **Sin entidades HTML.**
 6. **Anclas por JS** (`scrollIntoView`), sin cambiar la URL del CMS.
 
+## Cambios de contenido respecto al Figma
+
+Se definen en `EDITS` (`_generador/figma/build_all.py`).
+
+- **Inicio** (2026-11-24): se quitaron "Confianza · hechos del ecosistema" (11 / 264) y "Cómo funciona". En su lugar va la cabecera de Tiendas, tanto en escritorio como en móvil.
+
 ## Escalado y móvil
 
 - El diseño de escritorio mide 1440 px de ancho y el móvil 390 px. El JS aplica `zoom = ancho / 1440` o `ancho / 390`, así que la página se ve proporcionalmente igual al Figma en cualquier pantalla.

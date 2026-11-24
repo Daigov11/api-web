@@ -220,7 +220,7 @@ JS = r"""
       if(/^(nombre|whatsapp|negocio)$/.test(i.name)) return;
       var v = String(i.value||'').trim(); if(v) extra.push((i.getAttribute('data-label')||i.name) + ': ' + v);
     });
-    var giro = RUBRO.toUpperCase() + (extra.length ? ' | ' + extra.join(' | ') : '');
+    var giro = (RUBRO || 'INICIO').toUpperCase() + (extra.length ? ' | ' + extra.join(' | ') : '');
     btn.classList.add('fz-busy'); msg(btn, ['Enviando...'], 'ok');
     fetch(EP, {method:'POST', headers:{'accept':'text/plain','Content-Type':'application/json'},
       body: JSON.stringify({nombreCompleto:nombre, telefono:tel, nombreNegocio:neg, giroNegocio:giro, ipCreacion: ip || '0.0.0.0', destinatarios: DEST}), redirect:'follow'})

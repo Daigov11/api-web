@@ -29,7 +29,28 @@ def route(fname):
     return None
 
 
+# Ajustes de contenido sobre el Figma (pedidos del usuario)
+# 2026-11-24: en Inicio se quitan "Confianza · hechos del ecosistema" (11 / 264) y "Cómo funciona"
+#             y en su lugar va la cabecera (Hero) de Tiendas.
+EDITS = {
+    "inicio": [("10:2", ["10:5", "10:6"], "10:64"), ("54:2464", ["54:2467", "54:2468"], "10:76")],
+}
+
+
+def apply_edits(key):
+    import copy
+    idx = figapi._full_index()
+    for frame, remove, insert in EDITS.get(key, []):
+        kids = idx[frame]["children"]
+        pos = min(i for i, c in enumerate(kids) if c["id"] in remove)
+        kids[:] = [c for c in kids if c["id"] not in remove]
+        node = copy.deepcopy(idx[insert])
+        node["layoutSizingHorizontal"] = "FILL"
+        kids.insert(pos, node)
+
+
 def build(key):
+    apply_edits(key)
     name = "Inicio" if key == "inicio" else NAMES[key]
     desk = FRAMES[(name, "Desktop")]
     mob = FRAMES.get((name, "Mobile"))

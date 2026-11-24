@@ -1,0 +1,2120 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+<style>
+    :root {
+        --primary: #558bb2;
+        --primary-dark: #3e6f92;
+        --primary-soft: #edf5fb;
+        --dark: #071126;
+        --text: #24314a;
+        --muted: #64748b;
+        --line: #dfe8f1;
+        --bg: #f6f9fc;
+        --white: #fff;
+        --shadow: 0 18px 45px rgba(15, 23, 42, .12);
+        --shadow-soft: 0 10px 28px rgba(15, 23, 42, .08);
+        --radius: 22px;
+    }
+
+    .awx-embudo {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        overflow: auto;
+        background: #fff;
+        color: var(--text);
+        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+        scroll-behavior: smooth;
+    }
+
+    .awx-embudo * {
+        box-sizing: border-box
+    }
+
+    .awx-container {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 0 22px
+    }
+
+    .awx-section {
+        padding: 72px 0
+    }
+
+    .awx-light {
+        background: var(--bg)
+    }
+
+    .awx-center {
+        text-align: center
+    }
+
+    .awx-header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: rgba(255, 255, 255, .94);
+        backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--line);
+    }
+
+    .awx-header-inner {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 12px 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+    }
+
+    .awx-logo img {
+        width: 155px;
+        display: block
+    }
+
+    .awx-nav {
+        display: flex;
+        gap: 8px;
+        align-items: center
+    }
+
+    .awx-nav a {
+        color: var(--dark);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 800;
+        padding: 10px 12px;
+        border-radius: 999px;
+    }
+
+    .awx-nav a:hover {
+        background: var(--primary-soft);
+        color: var(--primary-dark)
+    }
+
+    .awx-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        min-height: 48px;
+        padding: 13px 20px;
+        border-radius: 999px;
+        border: 2px solid transparent;
+        font-weight: 900;
+        text-decoration: none;
+        cursor: pointer;
+        transition: .2s ease;
+        line-height: 1.15;
+        text-align: center;
+    }
+
+    .awx-btn-primary {
+        background: var(--primary);
+        color: #fff;
+        box-shadow: 0 12px 28px rgba(85, 139, 178, .28)
+    }
+
+    .awx-btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px)
+    }
+
+    .awx-btn-ghost {
+        background: #fff;
+        color: var(--primary-dark);
+        border-color: rgba(85, 139, 178, .25)
+    }
+
+    .awx-btn-ghost:hover {
+        background: var(--primary-soft)
+    }
+
+    .awx-btn-dark {
+        background: var(--dark);
+        color: #fff
+    }
+
+    .awx-btn-dark:hover {
+        transform: translateY(-2px)
+    }
+
+    .awx-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 70px 0 84px;
+        background:
+            radial-gradient(900px 420px at 10% -10%, rgba(85, 139, 178, .18), transparent 60%),
+            linear-gradient(180deg, #f8fbfd 0%, #fff 100%);
+    }
+
+    .awx-hero-grid {
+        display: grid;
+        grid-template-columns: 1.02fr .98fr;
+        gap: 46px;
+        align-items: center;
+    }
+
+    .awx-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1.5px solid rgba(85, 139, 178, .25);
+        background: var(--primary-soft);
+        color: var(--primary-dark);
+        border-radius: 999px;
+        padding: 7px 14px;
+        font-size: 12px;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        font-weight: 900;
+        margin-bottom: 14px;
+    }
+
+    .awx-title {
+        margin: 0 0 14px;
+        font-size: clamp(34px, 5vw, 64px);
+        line-height: 1.02;
+        font-weight: 900;
+        letter-spacing: -.04em;
+        color: var(--dark);
+    }
+
+    .awx-title strong {
+        color: var(--primary-dark)
+    }
+
+    .awx-subtitle {
+        margin: 0 0 24px;
+        color: var(--muted);
+        font-size: clamp(17px, 2vw, 21px);
+        line-height: 1.55;
+        max-width: 720px;
+    }
+
+    .awx-hero-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 18px
+    }
+
+    .awx-mini-note {
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 700;
+        margin: 0
+    }
+
+    .awx-countdown-strip {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 22px;
+        padding: 14px 16px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-left: 5px solid var(--primary);
+        border-radius: 18px;
+        box-shadow: var(--shadow-soft);
+    }
+
+    .awx-countdown-strip b {
+        color: var(--dark)
+    }
+
+    .awx-countdown {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 102px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: #0f172a;
+        color: #fff;
+        font-weight: 900;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: .04em;
+    }
+
+    .awx-video-card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+    }
+
+    .awx-video-head {
+        padding: 18px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .awx-video-head h3 {
+        margin: 0;
+        color: var(--dark);
+        font-size: 18px;
+        font-weight: 900
+    }
+
+    .awx-video-head span {
+        font-size: 12px;
+        font-weight: 900;
+        color: var(--primary-dark);
+        background: var(--primary-soft);
+        padding: 6px 10px;
+        border-radius: 999px
+    }
+
+    .awx-video {
+        position: relative;
+        aspect-ratio: 16/9;
+        background: #0f172a;
+    }
+
+    .awx-video iframe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0
+    }
+
+    .awx-video-foot {
+        padding: 16px 20px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.55;
+        margin: 0
+    }
+
+    .awx-feature-panel {
+        margin-top: 22px;
+        background: linear-gradient(135deg, #28708f 0%, #28708f 55%, #28708f 100%);
+        border-radius: 26px;
+        padding: 22px;
+        color: #fff;
+        box-shadow: var(--shadow);
+    }
+
+    .awx-feature-list {
+        display: grid;
+        gap: 12px
+    }
+
+    .awx-feature-row {
+        display: flex;
+        gap: 13px;
+        align-items: center;
+        background: rgba(255, 255, 255, .16);
+        border: 1px solid rgba(255, 255, 255, .22);
+        border-radius: 18px;
+        padding: 14px 16px;
+    }
+
+    .awx-feature-icon {
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, .18);
+        flex: 0 0 auto;
+    }
+
+    .awx-feature-row h4 {
+        font-size: 18px;
+        margin: 0 0 2px;
+        color: #fff;
+        font-weight: 900
+    }
+
+    .awx-feature-row p {
+        margin: 0;
+        color: rgba(255, 255, 255, .86);
+        font-size: 14px
+    }
+
+    .awx-section-title {
+        max-width: 850px;
+        margin: 0 auto 40px;
+        text-align: center
+    }
+
+    .awx-section-title h2 {
+        margin: 0 0 10px;
+        font-size: clamp(30px, 4vw, 52px);
+        line-height: 1.06;
+        color: var(--primary-dark);
+        font-weight: 900;
+        letter-spacing: -.035em;
+    }
+
+    .awx-section-title p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 18px;
+        line-height: 1.55
+    }
+
+    .awx-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px
+    }
+
+    .awx-card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: var(--shadow-soft);
+    }
+
+    .awx-card-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: var(--primary-soft);
+        display: grid;
+        place-items: center;
+        color: var(--primary-dark);
+        margin-bottom: 14px
+    }
+
+    .awx-card h3 {
+        margin: 0 0 8px;
+        color: var(--dark);
+        font-size: 19px;
+        font-weight: 900
+    }
+
+    .awx-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+        font-size: 15px
+    }
+
+    .awx-report-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px
+    }
+
+    .awx-report {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-left: 5px solid var(--primary);
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: var(--shadow-soft);
+    }
+
+    .awx-report h3 {
+        margin: 0 0 10px;
+        font-size: 24px;
+        color: var(--dark);
+        font-weight: 900
+    }
+
+    .awx-report p {
+        margin: 0 0 16px;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.65
+    }
+
+    .awx-badge-ok {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--primary-soft);
+        color: var(--primary-dark);
+        border: 1px solid rgba(85, 139, 178, .25);
+        border-radius: 999px;
+        padding: 8px 13px;
+        font-size: 13px;
+        font-weight: 900
+    }
+
+    .awx-form-section {
+        background: linear-gradient(180deg, #f7fafc 0%, #eef5f9 100%)
+    }
+
+    .awx-form-grid {
+        display: grid;
+        grid-template-columns: .9fr 1.1fr;
+        gap: 34px;
+        align-items: start
+    }
+
+    .awx-includes {
+        padding: 18px 0
+    }
+
+    .awx-includes h2 {
+        font-size: clamp(28px, 3.8vw, 44px);
+        line-height: 1.1;
+        margin: 0 0 14px;
+        color: var(--dark);
+        font-weight: 900
+    }
+
+    .awx-includes p {
+        color: var(--muted);
+        font-size: 17px;
+        line-height: 1.6;
+        margin: 0 0 28px
+    }
+
+    .awx-checks {
+        list-style: none;
+        margin: 0 0 24px;
+        padding: 0;
+        display: grid;
+        gap: 18px
+    }
+
+    .awx-checks li {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        font-size: 17px;
+        font-weight: 800;
+        color: #1d2b44
+    }
+
+    .awx-check {
+        width: 26px;
+        height: 26px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: #08bf55;
+        color: #fff;
+        flex: 0 0 auto;
+        font-weight: 900
+    }
+
+    .awx-how {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 24px;
+        box-shadow: var(--shadow-soft)
+    }
+
+    .awx-how h3 {
+        margin: 0 0 16px;
+        color: var(--dark);
+        font-size: 20px;
+        font-weight: 900
+    }
+
+    .awx-how-step {
+        display: flex;
+        gap: 12px;
+        margin: 14px 0
+    }
+
+    .awx-step-num {
+        width: 30px;
+        height: 30px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: #08bf55;
+        color: #fff;
+        font-weight: 900;
+        flex: 0 0 auto
+    }
+
+    .awx-how-step b {
+        display: block;
+        color: var(--dark);
+        margin-bottom: 2px
+    }
+
+    .awx-how-step span {
+        color: var(--muted);
+        font-size: 14px
+    }
+
+    .awx-form-card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 26px;
+        padding: 34px;
+        box-shadow: var(--shadow);
+    }
+
+    .awx-form-card h2 {
+        margin: 0 0 24px;
+        font-size: 28px;
+        color: var(--dark);
+        font-weight: 900
+    }
+
+    .awx-field {
+        margin-bottom: 18px
+    }
+
+    .awx-field label {
+        display: block;
+        margin: 0 0 8px;
+        color: #24314a;
+        font-weight: 900;
+        font-size: 15px
+    }
+
+    .awx-input,
+    .awx-select {
+        width: 100%;
+        height: 56px;
+        border: 1.5px solid #d9e3ef;
+        border-radius: 14px;
+        background: #fff;
+        color: #172033;
+        padding: 0 16px;
+        font-size: 16px;
+        outline: none;
+        transition: .18s ease;
+        font-family: inherit;
+    }
+
+    .awx-input:focus,
+    .awx-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(85, 139, 178, .13)
+    }
+
+    .awx-help {
+        display: block;
+        margin-top: 7px;
+        color: #8b99b3;
+        font-size: 13px
+    }
+
+    .awx-radio-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px
+    }
+
+    .awx-radio input {
+        position: absolute;
+        opacity: 0
+    }
+
+    .awx-radio span {
+        display: block;
+        border: 1.5px solid #d9e3ef;
+        border-radius: 14px;
+        padding: 14px 14px;
+        text-align: center;
+        font-weight: 900;
+        color: #31405a;
+        cursor: pointer
+    }
+
+    .awx-radio input:checked+span {
+        border-color: var(--primary);
+        background: var(--primary-soft);
+        color: var(--primary-dark)
+    }
+
+    .awx-form-card .awx-btn {
+        width: 100%;
+        min-height: 62px;
+        font-size: 17px;
+        margin-top: 4px
+    }
+
+    .awx-legal {
+        color: #8b99b3;
+        font-size: 12px;
+        line-height: 1.5;
+        text-align: center;
+        margin: 14px 0 0
+    }
+
+    .awx-final {
+        background: linear-gradient(135deg, #50b36d 0%, #2f8d4c 58%, #1d5e84 100%);
+        color: #fff;
+        text-align: center;
+    }
+
+    .awx-final h2 {
+        color: #fff;
+        margin: 0 0 12px;
+        font-size: clamp(30px, 4.3vw, 52px);
+        font-weight: 900;
+        line-height: 1.08
+    }
+
+    .awx-final p {
+        margin: 0 auto 24px;
+        max-width: 760px;
+        color: rgba(255, 255, 255, .86);
+        font-size: 18px;
+        line-height: 1.55
+    }
+
+    .awx-final .awx-btn {
+        background: #fff;
+        color: var(--primary-dark)
+    }
+
+    .awx-footer {
+        background: #071126;
+        color: #cbd5e1;
+        padding: 44px 0;
+        text-align: center
+    }
+
+    .awx-footer img {
+        width: 140px;
+        margin-bottom: 12px
+    }
+
+    .awx-footer p {
+        margin: 0;
+        color: #94a3b8;
+        font-size: 14px
+    }
+
+    .awx-wa {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        z-index: 80;
+        background: #25d366;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 999px;
+        padding: 13px 16px;
+        font-weight: 900;
+        box-shadow: 0 16px 35px rgba(0, 0, 0, .25);
+        display: flex;
+        align-items: center;
+        gap: 9px
+    }
+
+    @media(max-width:980px) {
+        .awx-nav {
+            display: none
+        }
+
+        .awx-hero-grid,
+        .awx-form-grid {
+            grid-template-columns: 1fr
+        }
+
+        .awx-hero {
+            text-align: center
+        }
+
+        .awx-hero-actions {
+            justify-content: center
+        }
+
+        .awx-countdown-strip {
+            justify-content: center
+        }
+
+        .awx-cards,
+        .awx-report-grid {
+            grid-template-columns: 1fr
+        }
+
+        .awx-feature-panel {
+            max-width: 680px;
+            margin-left: auto;
+            margin-right: auto
+        }
+    }
+
+    @media(max-width:560px) {
+        .awx-section {
+            padding: 54px 0
+        }
+
+        .awx-header-inner {
+            padding: 10px 16px
+        }
+
+        .awx-container {
+            padding: 0 16px
+        }
+
+        .awx-btn {
+            width: 100%
+        }
+
+        .awx-form-card {
+            padding: 24px 18px
+        }
+
+        .awx-radio-grid {
+            grid-template-columns: 1fr
+        }
+
+        .awx-wa {
+            right: 12px;
+            bottom: 12px;
+            padding: 12px;
+            font-size: 0
+        }
+
+        .awx-wa svg {
+            width: 24px;
+            height: 24px
+        }
+
+        .awx-title {
+            font-size: 36px
+        }
+    }
+
+
+    .awx-schedule-card {
+        margin: 0 auto 30px;
+        background: #fff;
+        border: 1.5px solid var(--line);
+        border-radius: 26px;
+        padding: 30px;
+        box-shadow: var(--shadow);
+    }
+
+    .awx-schedule-card h3 {
+        margin: 12px 0 8px;
+        font-size: 30px;
+        line-height: 1.08;
+        color: var(--dark);
+        font-weight: 900;
+    }
+
+    .awx-schedule-card p {
+        color: var(--muted);
+        line-height: 1.55;
+        margin: 0;
+        font-size: 16px;
+    }
+
+    .awx-slots {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .awx-slot {
+        min-height: 56px;
+        border-radius: 16px;
+        border: 1.5px solid rgba(85, 139, 178, .30);
+        background: #fff;
+        color: var(--primary-dark);
+        font-weight: 900;
+        font-size: 15px;
+        cursor: pointer;
+        font-family: inherit;
+    }
+
+    .awx-slot:hover {
+        background: var(--primary);
+        color: #fff
+    }
+
+    .awx-choice-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px
+    }
+
+    .awx-choice {
+        position: relative
+    }
+
+    .awx-choice input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none
+    }
+
+    .awx-choice span {
+        min-height: 56px;
+        border: 1.5px solid #d9e3ef;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        padding: 10px 12px;
+        font-weight: 900;
+        color: #31405a;
+        cursor: pointer;
+        background: #fff;
+    }
+
+    .awx-choice input:checked+span {
+        border-color: var(--primary);
+        background: var(--primary-soft);
+        color: var(--primary-dark);
+        box-shadow: 0 0 0 4px rgba(85, 139, 178, .13)
+    }
+
+    .awx-form-wrap-final {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 34px;
+        align-items: stretch
+    }
+
+    .awx-form-video-card,
+    .awx-form-card-final {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 26px;
+        box-shadow: var(--shadow);
+        overflow: hidden
+    }
+
+    .awx-form-video-card {
+        padding: 24px
+    }
+
+    .awx-form-video-box {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16/9;
+        border-radius: 20px;
+        background: #0f172a;
+        overflow: hidden
+    }
+
+    .awx-form-video-box iframe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0
+    }
+
+    .awx-form-video-card h3,
+    .awx-form-card-final h3 {
+        margin: 22px 0 10px;
+        font-size: 28px;
+        line-height: 1.12;
+        color: var(--dark);
+        font-weight: 900
+    }
+
+    .awx-form-video-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+        font-size: 16px
+    }
+
+    .awx-form-card-final {
+        padding: 32px
+    }
+
+    .awx-form-card-final .awx-btn {
+        width: 100%;
+        min-height: 58px
+    }
+
+    .awx-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 10100;
+        display: none;
+        place-items: center;
+        padding: 20px;
+        background: rgba(7, 17, 38, .68);
+        backdrop-filter: blur(8px)
+    }
+
+    .awx-modal.show {
+        display: grid
+    }
+
+    .awx-modal-box {
+        width: min(520px, 100%);
+        background: #fff;
+        border-radius: 26px;
+        box-shadow: 0 28px 90px rgba(0, 0, 0, .28);
+        padding: 30px;
+        position: relative
+    }
+
+    .awx-modal-close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 38px;
+        height: 38px;
+        border: 0;
+        border-radius: 50%;
+        color: #fff;
+        background: var(--dark);
+        cursor: pointer;
+        display: grid;
+        place-items: center
+    }
+
+    .awx-modal-box h3 {
+        margin: 0 0 10px;
+        font-size: 30px;
+        line-height: 1.08;
+        letter-spacing: -.04em;
+        color: var(--dark);
+        font-weight: 900
+    }
+
+    .awx-modal-box p {
+        margin: 0 0 18px;
+        color: var(--muted);
+        line-height: 1.55;
+        font-size: 17px
+    }
+
+    .awx-pop {
+        position: fixed;
+        right: 22px;
+        bottom: 22px;
+        z-index: 10080;
+        width: min(390px, calc(100% - 32px));
+        display: none;
+        border-radius: 24px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 24px 70px rgba(15, 23, 42, .24);
+        border: 1px solid rgba(226, 232, 240, .9)
+    }
+
+    .awx-pop.show {
+        display: block;
+        animation: awxPopIn .35s ease both
+    }
+
+    @keyframes awxPopIn {
+        from {
+            opacity: 0;
+            transform: translateY(18px) scale(.98)
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1)
+        }
+    }
+
+    .awx-pop-inner {
+        padding: 22px;
+        background: linear-gradient(135deg, #ffffff, #f4fff7)
+    }
+
+    .awx-pop-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 34px;
+        height: 34px;
+        border: 0;
+        border-radius: 50%;
+        background: rgba(15, 23, 42, .78);
+        color: #fff;
+        display: grid;
+        place-items: center;
+        cursor: pointer
+    }
+
+    .awx-pop-icon {
+        width: 62px;
+        height: 62px;
+        border-radius: 18px;
+        background: var(--primary-soft);
+        display: grid;
+        place-items: center;
+        color: var(--primary);
+        margin-bottom: 14px
+    }
+
+    .awx-pop h3 {
+        margin: 0 0 8px;
+        font-size: 25px;
+        line-height: 1.08;
+        letter-spacing: -.04em;
+        color: var(--dark);
+        font-weight: 900
+    }
+
+    .awx-pop p {
+        margin: 0 0 16px;
+        color: var(--muted);
+        line-height: 1.5;
+        font-size: 16px
+    }
+
+    @media(max-width:980px) {
+        .awx-form-wrap-final {
+            grid-template-columns: 1fr
+        }
+
+        .awx-slots {
+            grid-template-columns: 1fr 1fr
+        }
+    }
+
+    @media(max-width:560px) {
+
+        .awx-slots,
+        .awx-choice-row {
+            grid-template-columns: 1fr
+        }
+
+        .awx-pop {
+            right: 16px;
+            bottom: 16px
+        }
+
+        .awx-form-card-final {
+            padding: 24px 18px
+        }
+    }
+
+    .awx-feature-icon {
+        width: 56px;
+        height: 56px;
+        min-width: 56px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, .18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .awx-feature-icon img {
+        width: 42px;
+        height: 42px;
+        object-fit: contain;
+        display: block;
+    }
+
+    .awx-card-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 16px;
+        background: #eaf8ef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+        overflow: hidden;
+    }
+
+    .awx-card-icon img {
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+        display: block;
+    }
+
+    .awx-form-video-card {
+        max-width: 380px;
+        margin: 0 auto;
+    }
+
+    .awx-form-video-box {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 9 / 16;
+        border-radius: 28px;
+        overflow: hidden;
+        background: #000;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, .18);
+    }
+
+    .awx-form-video-box iframe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+
+
+    /* Aumento global de iconos +50% sin cambiar funcionalidad */
+    .awx-embudo .awx-feature-icon {
+        width: 84px;
+        height: 84px;
+        min-width: 84px;
+        border-radius: 24px;
+    }
+
+    .awx-embudo .awx-feature-icon img,
+    .awx-embudo .awx-feature-icon svg {
+        width: 63px;
+        height: 63px;
+    }
+
+    .awx-embudo .awx-card-icon {
+        width: 96px;
+        height: 96px;
+        min-width: 96px;
+        border-radius: 24px;
+    }
+
+    .awx-embudo .awx-card-icon img,
+    .awx-embudo .awx-card-icon svg {
+        width: 72px;
+        height: 72px;
+    }
+
+    .awx-embudo .awx-pop-icon {
+        width: 93px;
+        height: 93px;
+        min-width: 93px;
+        border-radius: 27px;
+    }
+
+    .awx-embudo .awx-pop-icon svg {
+        width: 48px;
+        height: 48px;
+    }
+
+    .awx-embudo .awx-wa svg {
+        width: 33px;
+        height: 33px;
+    }
+
+    @media(max-width:560px) {
+        .awx-embudo .awx-feature-icon {
+            width: 72px;
+            height: 72px;
+            min-width: 72px
+        }
+
+        .awx-embudo .awx-feature-icon img,
+        .awx-embudo .awx-feature-icon svg {
+            width: 54px;
+            height: 54px
+        }
+
+        .awx-embudo .awx-card-icon {
+            width: 82px;
+            height: 82px;
+            min-width: 82px
+        }
+
+        .awx-embudo .awx-card-icon img,
+        .awx-embudo .awx-card-icon svg {
+            width: 62px;
+            height: 62px
+        }
+    }
+
+    .awx-access-section {
+        padding-top: 30px;
+    }
+
+    .awx-access-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 26px;
+    }
+
+    .awx-access-card {
+        padding: 36px;
+        border-radius: 30px;
+        background: #ffffff;
+        box-shadow: 0 22px 60px rgba(15, 23, 42, 0.12);
+        border: 1px solid rgba(37, 99, 235, 0.12);
+    }
+
+    .awx-access-card h2 {
+        font-size: clamp(28px, 4vw, 44px);
+        font-weight: 900;
+        margin: 12px 0 14px;
+        color: #0f172a;
+        line-height: 1.05;
+    }
+
+    .awx-access-card p {
+        font-size: 17px;
+        line-height: 1.7;
+        color: #475569;
+        margin-bottom: 24px;
+    }
+
+    .awx-access-card-dark {
+        background: linear-gradient(135deg, #0f172a, #2563eb);
+        color: #ffffff;
+    }
+
+    .awx-access-card-dark h2,
+    .awx-access-card-dark p {
+        color: #ffffff;
+    }
+
+    .awx-access-card-dark .awx-kicker {
+        color: #dbeafe;
+    }
+
+    @media (max-width: 768px) {
+        .awx-access-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .awx-access-card {
+            padding: 28px 22px;
+        }
+    }
+
+    /* ===== SECCIÓN ACCESO DEMO / PDF ===== */
+
+    .awx-access-section {
+        padding: 70px 0;
+        background: #f8fafc;
+    }
+
+    .awx-container {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+    }
+
+    .awx-access-toggle-head {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 26px;
+    }
+
+    .awx-access-toggle-btn {
+        appearance: none;
+        border: 0;
+        cursor: pointer;
+        padding: 14px 28px;
+        border-radius: 999px;
+        background: #111827;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 800;
+        line-height: 1;
+        box-shadow: 0 14px 34px rgba(15, 23, 42, .18);
+        transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+    }
+
+    .awx-access-toggle-btn:hover {
+        transform: translateY(-2px);
+        background: #0f172a;
+        box-shadow: 0 18px 42px rgba(15, 23, 42, .24);
+    }
+
+    .awx-access-collapsible {
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: max-height .55s ease, opacity .35s ease, transform .35s ease;
+    }
+
+    .awx-access-collapsible.is-open {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .awx-access-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 26px;
+        padding-top: 8px;
+    }
+
+    .awx-access-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 30px;
+        padding: 34px;
+        background: #ffffff;
+        border: 1px solid rgba(15, 23, 42, .08);
+        box-shadow: 0 24px 70px rgba(15, 23, 42, .10);
+    }
+
+    .awx-access-card::before {
+        content: "";
+        position: absolute;
+        inset: -80px auto auto -80px;
+        width: 190px;
+        height: 190px;
+        border-radius: 999px;
+        background: rgba(80, 179, 109, .12);
+        pointer-events: none;
+    }
+
+    .awx-access-card .awx-kicker {
+        position: relative;
+        z-index: 1;
+    }
+
+    .awx-access-card h2 {
+        position: relative;
+        z-index: 1;
+        margin: 14px 0 14px;
+        font-size: clamp(28px, 3vw, 42px);
+        line-height: 1.08;
+        letter-spacing: -1px;
+        color: #0f172a;
+    }
+
+    .awx-access-card p {
+        position: relative;
+        z-index: 1;
+        margin: 0 0 24px;
+        color: #475569;
+        font-size: 17px;
+        line-height: 1.7;
+    }
+
+    .awx-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        width: fit-content;
+        padding: 8px 13px;
+        border-radius: 999px;
+        background: rgba(80, 179, 109, .13);
+        color: #267843;
+        font-size: 13px;
+        font-weight: 900;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+    }
+
+    .awx-btn {
+        position: relative;
+        z-index: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: fit-content;
+        min-height: 48px;
+        padding: 14px 22px;
+        border-radius: 999px;
+        background: #50b36d;
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 900;
+        line-height: 1;
+        text-decoration: none;
+        border: 1px solid rgba(255, 255, 255, .18);
+        box-shadow: 0 18px 44px rgba(80, 179, 109, .28);
+        transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+    }
+
+    .awx-btn:hover {
+        transform: translateY(-2px);
+        background: #3fa15b;
+        box-shadow: 0 22px 52px rgba(80, 179, 109, .36);
+    }
+
+    .awx-btn.secondary {
+        background: rgba(255, 255, 255, .10);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, .24);
+        box-shadow: none;
+    }
+
+    .awx-btn.secondary:hover {
+        background: rgba(255, 255, 255, .18);
+    }
+
+    /* ===== TARJETA OSCURA ===== */
+
+    .awx-access-card-dark {
+        background:
+            radial-gradient(circle at top right, rgba(80, 179, 109, .28), transparent 34%),
+            linear-gradient(145deg, #0f172a, #020617);
+        color: #ffffff;
+        border-color: rgba(255, 255, 255, .10);
+    }
+
+    .awx-access-card-dark::before {
+        background: rgba(255, 255, 255, .07);
+    }
+
+    .awx-access-card-dark h2 {
+        color: #ffffff;
+    }
+
+    .awx-access-card-dark p {
+        color: rgba(255, 255, 255, .76);
+    }
+
+    .awx-access-card-dark .awx-kicker {
+        background: rgba(80, 179, 109, .18);
+        color: #9ff3b8;
+    }
+
+    /* ===== DEMO BOX ===== */
+
+    .awx-demo-grid {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        gap: 18px;
+        margin-top: 22px;
+    }
+
+    .awx-demo-box {
+        padding: 22px;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, .08);
+        border: 1px solid rgba(255, 255, 255, .13);
+        backdrop-filter: blur(10px);
+    }
+
+    .awx-demo-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 18px;
+    }
+
+    .awx-demo-head span {
+        color: #ffffff;
+        font-size: 18px;
+        font-weight: 900;
+    }
+
+    .awx-demo-credentials {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 10px 12px;
+        margin-bottom: 20px;
+        color: rgba(255, 255, 255, .82);
+        font-size: 15px;
+        line-height: 1.45;
+    }
+
+    .awx-demo-credentials strong {
+        color: #ffffff;
+        font-weight: 900;
+    }
+
+    .awx-demo-credentials a {
+        color: #9ff3b8;
+        font-weight: 800;
+        text-decoration: none;
+        word-break: break-word;
+    }
+
+    .awx-demo-credentials a:hover {
+        text-decoration: underline;
+    }
+
+    .awx-demo-btn {
+        width: 100%;
+        margin-top: 4px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+
+    @media (max-width: 900px) {
+        .awx-access-section {
+            padding: 54px 0;
+        }
+
+        .awx-access-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .awx-access-card {
+            padding: 28px;
+            border-radius: 26px;
+        }
+    }
+
+    @media (max-width: 560px) {
+        .awx-container {
+            width: min(100% - 24px, 1180px);
+        }
+
+        .awx-access-toggle-btn {
+            width: 100%;
+        }
+
+        .awx-access-card {
+            padding: 24px;
+        }
+
+        .awx-access-card h2 {
+            font-size: 27px;
+        }
+
+        .awx-access-card p {
+            font-size: 16px;
+        }
+
+        .awx-demo-credentials {
+            grid-template-columns: 1fr;
+            gap: 6px;
+        }
+
+        .awx-demo-credentials strong {
+            margin-top: 6px;
+        }
+
+        .awx-btn {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="awx-embudo">
+    <a class="awx-wa"
+        href="https://wa.me/51912247788?text=Hola%2C%20quiero%20acceder%20a%20la%20implementaci%C3%B3n%20gratis%20de%20APIstaff"
+        target="_blank" rel="noopener" aria-label="WhatsApp APIstaff">
+        <svg width="22" height="22" viewBox="0 0 32 32" fill="currentColor">
+            <path
+                d="M19.11 17.53c-.28-.14-1.66-.82-1.92-.91-.26-.1-.45-.14-.64.14-.19.28-.74.91-.91 1.1-.17.19-.33.21-.61.07-.28-.14-1.17-.43-2.23-1.38-.82-.73-1.38-1.64-1.54-1.92-.16-.28-.02-.43.12-.57.12-.12.28-.33.43-.5.14-.17.19-.28.28-.47.1-.19.05-.36-.02-.5-.07-.14-.64-1.54-.88-2.11-.23-.55-.47-.48-.64-.49h-.55c-.19 0-.5.07-.76.36-.26.28-1 1-1 2.44s1.02 2.83 1.16 3.02c.14.19 2.01 3.07 4.87 4.31.68.29 1.21.46 1.62.59.68.22 1.31.19 1.8.12.55-.08 1.66-.68 1.9-1.33.23-.64.23-1.19.16-1.31-.07-.12-.26-.19-.54-.33z" />
+            <path
+                d="M16 3C8.82 3 3 8.66 3 15.66c0 2.33.63 4.51 1.73 6.4L3 29l7.1-1.84c1.8.97 3.86 1.52 6.03 1.52 7.18 0 13-5.66 13-12.66C29 8.66 23.18 3 16 3zm0 23.04c-2.06 0-3.96-.62-5.55-1.68l-.4-.25-4.2 1.08 1.12-4.04-.27-.41a10.7 10.7 0 0 1-1.74-5.82C4.96 9.87 9.98 4.96 16 4.96c6.02 0 11.04 4.91 11.04 10.96S22.02 26.04 16 26.04z" />
+        </svg>
+        WhatsApp
+    </a>
+
+    <header class="awx-header">
+        <div class="awx-header-inner">
+            <a class="awx-logo" href="https://apiworking.com.pe/"><img
+                    src="https://apiworking.com.pe/assets/public/img/content/logotipo_7890274894_1755567690.png"
+                    alt="ApiWorking"></a>
+            <nav class="awx-nav">
+                <a href="#video">Video</a>
+                <a href="#beneficios">Beneficios</a>
+                <a href="#registro">Registro</a>
+                <a class="awx-btn awx-btn-primary" href="#registro">Implementación gratis</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="awx-hero" id="inicio">
+            <div class="awx-container">
+                <div class="awx-hero-grid">
+                    <div>
+                        <div class="awx-pill">La solución laboral de ApiWorking</div>
+                        <h1 class="awx-title">Presentamos <strong>APIstaff</strong>: ordena tu gestión laboral de
+                            principio a fin.</h1>
+                        <p class="awx-subtitle">Controla asistencias, genera boletas digitales, prepara AFPnet, PLAME y
+                            calcula beneficios laborales desde una sola plataforma.</p>
+                        <div class="awx-hero-actions">
+                            <a class="awx-btn awx-btn-primary" href="#registro">Acceder a la implementación gratis</a>
+                            <a class="awx-btn awx-btn-ghost" href="#video">Ver video primero</a>
+                        </div>
+                        <p class="awx-mini-note">Embudo corto con video + registro rápido antes de pasar a la web final.
+                        </p>
+                        <div class="awx-countdown-strip">
+                            <b>Accede gratis en los siguientes 30 min:</b>
+                            <span class="awx-countdown" data-countdown>30:00</span>
+                            <span>Regístrate en menos de 1 minuto.</span>
+                        </div>
+                    </div>
+
+                    <div class="awx-feature-panel" aria-label="Funciones APIstaff">
+                        <div class="awx-feature-list">
+                            <div class="awx-feature-row">
+                                <div class="awx-feature-icon">
+                                    <img src="https://apiworking.com.pe/assets/public/img/content/image-removebg-preview-19-1.png"
+                                        alt="Control total">
+                                </div>
+                                <div>
+                                    <h4>Control total</h4>
+                                    <p>Asistencias por QR, facial o huella</p>
+                                </div>
+                            </div>
+
+                            <div class="awx-feature-row">
+                                <div class="awx-feature-icon">
+                                    <img src="https://apiworking.com.pe/assets/public/img/content/image-removebg-preview1.png"
+                                        alt="Boletas masivas">
+                                </div>
+                                <div>
+                                    <h4>Boletas masivas</h4>
+                                    <p>Generación digital en un solo clic</p>
+                                </div>
+                            </div>
+
+                            <div class="awx-feature-row">
+                                <div class="awx-feature-icon">
+                                    <img src="https://apiworking.com.pe/assets/public/img/content/image-removebg-preview-21-1.png"
+                                        alt="AFPnet PLAME SUNAFIL">
+                                </div>
+                                <div>
+                                    <h4>AFPnet · PLAME · SUNAFIL</h4>
+                                    <p>Reportes listos para cargar directamente</p>
+                                </div>
+                            </div>
+
+                            <div class="awx-feature-row">
+                                <div class="awx-feature-icon">
+                                    <img src="https://apiworking.com.pe/assets/public/img/content/image-removebg-preview-20-1.png"
+                                        alt="Planillas CTS Gratificaciones">
+                                </div>
+                                <div>
+                                    <h4>Planillas + CTS + Gratificaciones</h4>
+                                    <p>Cálculos precisos según la ley peruana</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="awx-section" id="beneficios">
+            <div class="awx-container">
+                <div class="awx-section-title">
+                    <div class="awx-pill">Boletas digitales</div>
+                    <h2>Genera y entrega boletas de pago en minutos, no en días.</h2>
+                    <p>APIstaff genera boletas de pago digitales para todos tus trabajadores de forma masiva, con un
+                        solo proceso y datos correctos.</p>
+                </div>
+                <div class="awx-cards">
+                    <div class="awx-card">
+                        <div class="awx-card-icon">
+                            <img src="https://apiworking.com.pe/assets/public/img/content/image-removebg-preview-3-1.png"
+                                alt="Generación masiva">
+                        </div>
+                        <h3>Generación masiva</h3>
+                        <p>Procesa las boletas de todo tu personal en una sola operación.</p>
+                    </div>
+
+                    <div class="awx-card">
+                        <div class="awx-card-icon">
+                            <img src="https://apiworking.com.pe/assets/public/img/content/image-removebg-preview-4.png"
+                                alt="Conceptos detallados">
+                        </div>
+                        <h3>Conceptos detallados</h3>
+                        <p>Incluye remuneraciones, descuentos y conceptos generados desde la planilla.</p>
+                    </div>
+
+                    <div class="awx-card">
+                        <div class="awx-card-icon">
+                            <img src="https://apiworking.com.pe/assets/public/img/content/image-removebg-preview-5.png"
+                                alt="Entrega digital">
+                        </div>
+                        <h3>Entrega digital</h3>
+                        <p>El trabajador recibe su boleta sin papel ni colas para recoger documentos.</p>
+                    </div>
+
+                    <div class="awx-card">
+                        <div class="awx-card-icon">
+                            <img src="https://apiworking.com.pe/assets/public/img/content/image-removebg-preview-6.png"
+                                alt="Historial disponible">
+                        </div>
+                        <h3>Historial disponible</h3>
+                        <p>Boletas disponibles para consultas del trabajador o del área de RRHH.</p>
+                    </div>
+
+                    <div class="awx-card">
+                        <div class="awx-card-icon">
+                            <img src="https://apiworking.com.pe/assets/public/img/content/image-removebg-preview-7.png"
+                                alt="Cumple requisitos">
+                        </div>
+                        <h3>Cumple requisitos</h3>
+                        <p>Boletas generadas bajo criterios necesarios para el entorno laboral peruano.</p>
+                    </div>
+
+                    <div class="awx-card">
+                        <div class="awx-card-icon">
+                            <img src="https://apiworking.com.pe/assets/public/img/content/image-removebg-preview-8.png"
+                                alt="Menos errores">
+                        </div>
+                        <h3>Menos errores</h3>
+                        <p>Evita reprocesos por fórmulas manuales o datos mal copiados.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="awx-section awx-light">
+            <div class="awx-container">
+                <div class="awx-section-title">
+                    <div class="awx-pill">Reportes laborales</div>
+                    <h2>Tus reportes para AFPnet y PLAME, listos para cargar sin retrabajos.</h2>
+                    <p>Genera archivos con estructura lista para declaración y reduce correcciones de último momento.
+                    </p>
+                </div>
+                <div class="awx-report-grid">
+                    <div class="awx-report">
+                        <h3>Informe para AFPnet</h3>
+                        <p>Archivo generado desde la planilla del mes, con los aportes y datos de cada trabajador en el
+                            formato correcto.</p><span class="awx-badge-ok">✓ Compatible con todas las AFP</span>
+                    </div>
+                    <div class="awx-report">
+                        <h3>Exportación para PDT PLAME</h3>
+                        <p>Archivo compatible con PDT PLAME de SUNAT. Datos correctos, estructura validada y lista para
+                            declaración.</p><span class="awx-badge-ok">✓ Compatible con SUNAT PDT PLAME</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="awx-section" id="calculos">
+            <div class="awx-container">
+                <div class="awx-section-title">
+                    <div class="awx-pill">Beneficios sociales</div>
+                    <h2>Todos los cálculos que la ley exige, en un solo sistema.</h2>
+                    <p>Calcula gratificaciones, CTS y liquidaciones con precisión, sin depender de hojas manuales.</p>
+                </div>
+                <div class="awx-cards">
+                    <div class="awx-card awx-center">
+                        <div class="awx-card-icon" style="margin-left:auto;margin-right:auto">
+                            <img src="https://apiworking.com.pe/assets/public/img/content/image-removebg-preview-9.png"
+                                alt="Gratificaciones">
+                        </div>
+                        <h3>Gratificaciones</h3>
+                        <p>Cálculo automático para julio y diciembre según remuneración y tiempo de servicio.</p>
+                    </div>
+
+                    <div class="awx-card awx-center">
+                        <div class="awx-card-icon" style="margin-left:auto;margin-right:auto">
+                            <img src="https://apiworking.com.pe/assets/public/img/content/image-removebg-preview-11.png"
+                                alt="CTS">
+                        </div>
+                        <h3>CTS</h3>
+                        <p>Determina la compensación por tiempo de servicios según conceptos remunerativos.</p>
+                    </div>
+
+                    <div class="awx-card awx-center">
+                        <div class="awx-card-icon" style="margin-left:auto;margin-right:auto">
+                            <img src="https://apiworking.com.pe/assets/public/img/content/image-removebg-preview-10.png"
+                                alt="Liquidaciones">
+                        </div>
+                        <h3>Liquidaciones</h3>
+                        <p>Calcula beneficios pendientes, vacaciones truncas y conceptos proporcionales.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="awx-section awx-form-section" id="registro">
+            <div class="awx-container">
+                <div class="awx-section-title">
+                    <div class="awx-pill">Registro</div>
+                    <h2>Solicita tu implementación gratuita de APIstaff</h2>
+                    <p>Elige un horario disponible y completa tus datos para coordinar la activación de APIstaff.</p>
+                </div>
+
+                <div class="awx-schedule-card" id="agenda-demo">
+                    <div class="awx-pill">Demo en vivo</div>
+                    <h3>Selecciona un horario disponible.</h3>
+                    <p>Elige el horario que prefieras para revisar APIstaff aplicado a tu empresa.</p>
+                    <div class="awx-slots">
+                        <button class="awx-slot" type="button" data-slot="Hoy 10:30 a. m.">Hoy 10:30 a. m.</button>
+                        <button class="awx-slot" type="button" data-slot="Hoy 3:00 p. m.">Hoy 3:00 p. m.</button>
+                        <button class="awx-slot" type="button" data-slot="Hoy 5:30 p. m.">Hoy 5:30 p. m.</button>
+                        <button class="awx-slot" type="button" data-slot="Mañana 9:30 a. m.">Mañana 9:30 a. m.</button>
+                        <button class="awx-slot" type="button" data-slot="Mañana 11:00 a. m.">Mañana 11:00 a.
+                            m.</button>
+                        <button class="awx-slot" type="button" data-slot="Mañana 4:00 p. m.">Mañana 4:00 p. m.</button>
+                        <button class="awx-slot" type="button" data-slot="Viernes 10:00 a. m.">Viernes 10:00 a.
+                            m.</button>
+                        <button class="awx-slot" type="button" data-slot="Viernes 6:00 p. m.">Viernes 6:00 p.
+                            m.</button>
+                    </div>
+                </div>
+
+                <div class="awx-form-wrap-final">
+                    <div class="awx-form-video-card">
+                        <div class="awx-form-video-box">
+                            <iframe src="https://www.youtube.com/embed/yjJNa2HyOWo?rel=0&modestbranding=1"
+                                title="Video APIstaff"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen></iframe>
+                        </div>
+                        <h3>APIstaff para ordenar tu gestión laboral</h3>
+                        <p>Controla asistencia, planillas, boletas digitales y reportes laborales desde una sola
+                            plataforma.</p>
+                    </div>
+
+                    <form class="awx-form-card-final" id="awxForm">
+                        <div class="awx-pill">Implementación gratis</div>
+                        <h3>Solicitar licencia gratuita</h3>
+                        <div class="awx-field">
+                            <label for="awxName">Nombres completos *</label>
+                            <input class="awx-input" id="awxName" name="nombres" type="text"
+                                placeholder="Ej: María García López" required>
+                        </div>
+                        <div class="awx-field">
+                            <label for="awxEmail">Correo electrónico *</label>
+                            <input class="awx-input" id="awxEmail" name="correo" type="email"
+                                placeholder="correo@empresa.com" required>
+                        </div>
+                        <div class="awx-field">
+                            <label for="awxPhone">Número de contacto *</label>
+                            <input class="awx-input" id="awxPhone" name="telefono" type="tel" placeholder="999 000 111"
+                                required>
+                        </div>
+                        <div class="awx-field">
+                            <label for="awxRuc">RUC *</label>
+                            <input class="awx-input" id="awxRuc" name="ruc" type="text" placeholder="20123456789"
+                                minlength="11" maxlength="11" required>
+                        </div>
+                        <div class="awx-field">
+                            <label>¿Eres cliente ApiWorking? *</label>
+                            <div class="awx-choice-row">
+                                <label class="awx-choice"><input type="radio" name="cliente_apiworking" value="Sí"
+                                        required><span>Sí</span></label>
+                                <label class="awx-choice"><input type="radio" name="cliente_apiworking" value="Aún no"
+                                        required><span>Aún no</span></label>
+                            </div>
+                        </div>
+                        <button class="awx-btn awx-btn-primary" type="submit">ACCEDER A LA IMPLEMENTACIÓN
+                            GRATIS</button>
+                        <p class="awx-legal">Al enviar este formulario aceptas que ApiWorking se comunique contigo para
+                            coordinar la implementación gratuita.</p>
+                    </form>
+                </div>
+            </div>
+        </section>
+        <section class="awx-section awx-access-section" id="acceso-demo">
+            <div class="awx-container">
+                <div class="awx-access-toggle-head"> <button class="awx-access-toggle-btn" id="awxAccessToggle"
+                        type="button"> Ver más </button> </div>
+                <div class="awx-access-collapsible" id="awxAccessContent">
+                    <div class="awx-access-grid">
+                        <div class="awx-access-card"> <span class="awx-kicker">Más información</span>
+                            <h2>Descarga el PDF informativo</h2>
+                            <p> Conoce mejor cómo funciona ApiStaff, sus beneficios, casos de uso y cómo puede
+                                integrarse al ecosistema Apiworking. </p> <a class="awx-btn"
+                                href="https://apiworking.pe/assets/public/files/0825111410_1779332994.pdf"
+                                target="_blank" rel="noopener"> Descargar PDF </a>
+                        </div>
+                        <div class="awx-access-card awx-access-card-dark"> <span class="awx-kicker">Prueba el
+                                sistema</span>
+                            <h2>Accede a una demo en vivo</h2>
+                            <p> Ingresa al sistema de prueba y conoce cómo ApiStaff puede ayudarte a responder, vender,
+                                cobrar y atender automáticamente. </p>
+                            <div class="awx-demo-grid">
+                                <div class="awx-demo-box">
+                                    <div class="awx-demo-head"> <span>Demo ApiLoyalty</span> </div>
+                                    <div class="awx-demo-credentials"> <strong>Link:</strong> <a
+                                            href="https://apiworkingstaff.com/" target="_blank" rel="noopener">
+                                            https://apiworkingstaff.com/ </a> <strong>Correo:</strong>
+                                        <span>demo@apistaff.com</span> <strong>Contraseña:</strong>
+                                        <span>demo123</span> </div> <a class="awx-btn secondary awx-demo-btn"
+                                        href="https://apiloyalty.co/" target="_blank" rel="noopener"> Probar ApiStaff
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+
+    <div class="awx-pop" id="awx-pop" aria-live="polite">
+        <button class="awx-pop-close" type="button" id="awx-pop-close" aria-label="Cerrar aviso">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+            </svg>
+        </button>
+        <div class="awx-pop-inner">
+            <div class="awx-pop-icon" id="awx-pop-icon"></div>
+            <h3 id="awx-pop-title">Controla asistencias sin complicarte</h3>
+            <p id="awx-pop-text">APIstaff te ayuda a ordenar asistencias, planillas y boletas digitales desde una sola
+                plataforma.</p>
+            <a class="awx-btn awx-btn-primary" id="awx-pop-link" href="#registro">Registrarme</a>
+        </div>
+    </div>
+
+    <div class="awx-modal" id="awx-modal" role="dialog" aria-modal="true" aria-labelledby="awx-modal-title">
+        <div class="awx-modal-box">
+            <button class="awx-modal-close" type="button" id="awx-modal-close" aria-label="Cerrar confirmación">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                    <path d="M18 6 6 18"></path>
+                    <path d="m6 6 12 12"></path>
+                </svg>
+            </button>
+            <h3 id="awx-modal-title">Horario seleccionado</h3>
+            <p id="awx-modal-text">Seleccionaste un horario para la demo en vivo.</p>
+            <a class="awx-btn awx-btn-primary" href="#awxForm" id="awx-modal-register">Continuar con mis datos</a>
+        </div>
+    </div>
+    <footer class="awx-footer">
+        <div class="awx-container">
+            <img src="https://apiworking.com.pe/assets/public/img/content/logotipo_7890274894_1755567690.png"
+                alt="ApiWorking">
+            <p>APIstaff — de APIWORKING, para empresas peruanas.</p>
+            <p>© <span id="awxYear"></span> ApiWorking. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+</div>
+
+<script>
+    (function () {
+        var initialSeconds = 30 * 60;
+        var storageKey = 'awx_apistaff_countdown_end';
+        var now = Date.now();
+        var end = parseInt(localStorage.getItem(storageKey) || '0', 10);
+
+        if (!end || end < now) {
+            end = now + initialSeconds * 1000;
+            localStorage.setItem(storageKey, String(end));
+        }
+
+        function pad(n) { return n < 10 ? '0' + n : String(n); }
+        function updateCountdown() {
+            var left = Math.max(0, Math.floor((end - Date.now()) / 1000));
+            var min = Math.floor(left / 60);
+            var sec = left % 60;
+            document.querySelectorAll('[data-countdown]').forEach(function (el) {
+                el.textContent = pad(min) + ':' + pad(sec);
+            });
+        }
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        document.getElementById('awxYear').textContent = new Date().getFullYear();
+
+        document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+            a.addEventListener('click', function (e) {
+                var target = document.querySelector(a.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        document.getElementById('awxForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            var form = e.currentTarget;
+            var data = new FormData(form);
+            var nombre = data.get('nombres') || '';
+            var correo = data.get('correo') || '';
+            var telefono = data.get('telefono') || '';
+            var ruc = data.get('ruc') || '';
+            var cliente = data.get('cliente_apiworking') || '';
+
+            var msg = 'Hola, quiero acceder a la implementación gratis de APIstaff.%0A%0A' +
+                'Nombres: ' + encodeURIComponent(nombre) + '%0A' +
+                'Correo: ' + encodeURIComponent(correo) + '%0A' +
+                'Teléfono: ' + encodeURIComponent(telefono) + '%0A' +
+                'RUC: ' + encodeURIComponent(ruc) + '%0A' +
+                'Cliente ApiWorking: ' + encodeURIComponent(cliente);
+
+            window.open('https://wa.me/51912247788?text=' + msg, '_blank');
+
+        });
+
+        var modal = document.getElementById('awx-modal');
+        var modalText = document.getElementById('awx-modal-text');
+        var modalClose = document.getElementById('awx-modal-close');
+        var modalRegister = document.getElementById('awx-modal-register');
+        document.querySelectorAll('.awx-slot').forEach(function (slotBtn) {
+            slotBtn.addEventListener('click', function () {
+                var slot = this.getAttribute('data-slot');
+                if (modalText) modalText.textContent = 'Seleccionaste: ' + slot + '. Ahora completa tus datos para confirmar la demo.';
+                if (modal) modal.classList.add('show');
+            });
+        });
+        if (modalClose) modalClose.addEventListener('click', function () { if (modal) modal.classList.remove('show'); });
+        if (modalRegister) modalRegister.addEventListener('click', function () { if (modal) modal.classList.remove('show'); });
+        if (modal) modal.addEventListener('click', function (event) { if (event.target === modal) modal.classList.remove('show'); });
+
+        var pop = document.getElementById('awx-pop');
+        var popClose = document.getElementById('awx-pop-close');
+        var popTitle = document.getElementById('awx-pop-title');
+        var popText = document.getElementById('awx-pop-text');
+        var popIcon = document.getElementById('awx-pop-icon');
+        var popData = [
+            {
+                title: 'Controla asistencias sin complicarte',
+                text: 'APIstaff te ayuda a ordenar asistencias, planillas y boletas digitales desde una sola plataforma.',
+                icon: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg>'
+            },
+            {
+                title: 'Boletas digitales masivas',
+                text: 'Genera boletas de pago para todo tu personal sin procesos manuales extensos.',
+                icon: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path><path d="M8 13h8"></path><path d="M8 17h5"></path></svg>'
+            },
+            {
+                title: 'Reportes listos para declarar',
+                text: 'Prepara AFPnet y PLAME con información ordenada y lista para revisar.',
+                icon: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M3 3v18h18"></path><path d="M7 16l4-4 3 3 5-7"></path></svg>'
+            }
+        ];
+        var popIndex = 0;
+        function renderPop() {
+            var item = popData[popIndex];
+            if (popTitle) popTitle.textContent = item.title;
+            if (popText) popText.textContent = item.text;
+            if (popIcon) popIcon.innerHTML = item.icon;
+            popIndex = (popIndex + 1) % popData.length;
+        }
+        setTimeout(function () {
+            renderPop();
+            if (pop) pop.classList.add('show');
+            setInterval(renderPop, 3000);
+        }, 30000);
+        if (popClose) popClose.addEventListener('click', function () { if (pop) pop.classList.remove('show'); });
+
+    })();
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var toggleBtn = document.getElementById('awxAccessToggle');
+        var content = document.getElementById('awxAccessContent');
+
+        if (!toggleBtn || !content) return;
+
+        content.style.maxHeight = '0px';
+
+        toggleBtn.addEventListener('click', function () {
+            var isOpen = content.classList.contains('is-open');
+
+            if (isOpen) {
+                content.style.maxHeight = content.scrollHeight + 'px';
+
+                requestAnimationFrame(function () {
+                    content.style.maxHeight = '0px';
+                });
+
+                content.classList.remove('is-open');
+                toggleBtn.textContent = 'Ver más';
+            } else {
+                content.classList.add('is-open');
+                content.style.maxHeight = content.scrollHeight + 'px';
+                toggleBtn.textContent = 'Ver menos';
+            }
+        });
+
+        window.addEventListener('resize', function () {
+            if (content.classList.contains('is-open')) {
+                content.style.maxHeight = content.scrollHeight + 'px';
+            }
+        });
+    });
+</script>
